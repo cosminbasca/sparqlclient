@@ -34,6 +34,7 @@ package object sparqlclient {
     val ADD = "ADD"
   }
 
+
   object RequestMethod extends Enumeration {
     type RequestMethod = String
     val URLENCODED = "urlencoded"
@@ -70,4 +71,7 @@ package object sparqlclient {
   val SPARQL_POSSIBLE: Array[String] = SPARQL_XML ++ SPARQL_JSON ++ RDF_XML ++ RDF_N3
 
   val AGENT: String = s"sparqlwrapper scala client v${BuildInfo.version}"
+
+  val GET: String = "GET"
+  val POST: String = "POST"
 }
