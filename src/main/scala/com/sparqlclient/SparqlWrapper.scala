@@ -18,7 +18,7 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
   private val updateEndpoint: URL = update.getOrElse(endpoint)
   private val user: Option[String] = None
   private val pass: Option[String] = None
-  private val defaultReturnFormat: String = if (DataFormat.values.toArray.contains(format)) {
+  private val defaultReturnFormat: String = if (ALLOWED_DATA_FORMATS.contains(format)) {
     format
   } else {
     DataFormat.XML
@@ -47,5 +47,34 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
     requestMethod = RequestMethod.URLENCODED
   }
 
+  def setReturnFormat(format: String) = {
+    if (ALLOWED_DATA_FORMATS.contains(format)) {
+      returnFormat = format
+    }
+  }
 
+  def setTimeout(timeout: Int) = {
+    this.timeout = Some(timeout)
+  }
+
+  def setRequestMethod(method: String) = {
+    if (ALLOWED_REQUESTS_METHODS.contains(method)) {
+      requestMethod = method
+    } else {
+      println(s"Invalid update method: $method")
+    }
+  }
+
+  def addParameter(name: String, value: String): Boolean = {
+    name match {
+      case "query" => false
+      case _ =>
+        if (parameters.contains(name)) {
+          parameters.put(name, )
+        } else {
+
+        }
+        true
+    }
+  }
 }

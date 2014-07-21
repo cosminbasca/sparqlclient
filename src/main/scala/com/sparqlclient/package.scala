@@ -17,6 +17,8 @@ package object sparqlclient {
     val RDF = "rdf"
   }
 
+  val ALLOWED_DATA_FORMATS: Array[String] = DataFormat.values.toArray[String]
+
   object QueryType extends Enumeration {
     type QueryType = String
     val SELECT = "SELECT"
@@ -34,12 +36,15 @@ package object sparqlclient {
     val ADD = "ADD"
   }
 
+  val ALLOWED_QUERY_TYPES: Array[String] = QueryType.values.toArray[String]
 
   object RequestMethod extends Enumeration {
     type RequestMethod = String
     val URLENCODED = "urlencoded"
     val POSTDIRECTLY = "postdirectly"
   }
+
+  val ALLOWED_REQUESTS_METHODS: Array[String] = RequestMethod.values.toArray[String]
 
   object MimeType extends Enumeration {
     type MimeType = String
