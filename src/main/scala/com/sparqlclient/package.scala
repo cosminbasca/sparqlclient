@@ -1,5 +1,7 @@
 package com
 
+import dispatch.BuildInfo
+
 /**
  * Created by basca on 21/07/14.
  */
@@ -56,18 +58,16 @@ package object sparqlclient {
     val JSON_LD = "application/ld+json"
   }
 
-  object ValidMimeType extends Enumeration {
-    type ValidMimeType = Array[String]
-    val SPARQL_DEFAULT = Array(MimeType.SPARQL_RESULTS_XML, MimeType.RDF_XML, MimeType.ANY)
-    val SPARQL_XML = Array(MimeType.SPARQL_RESULTS_XML)
-    val SPARQL_JSON = Array(MimeType.SPARQL_RESULTS_JSON, MimeType.JAVASCRIPT, MimeType.JSON)
-    val RDF_XML = Array(MimeType.RDF_XML)
-    val RDF_N3 = Array(MimeType.RDF_N3, MimeType.RDF_NTRIPLES, MimeType.RDF_TURTLE, MimeType.RDF_N3_APP,
-      MimeType.RDF_N3_TXT, MimeType.RDF_TURTLE_TXT)
-    val RDF_JSONLD = Array(MimeType.JSON_LD_X, MimeType.JSON_LD)
-    val ALL = Array(MimeType.ANY)
-    val RDF_POSSIBLE = RDF_XML ++ RDF_N3
-    val SPARQL_POSSIBLE = SPARQL_XML ++ SPARQL_JSON ++ RDF_XML ++ RDF_N3
-  }
+  val SPARQL_DEFAULT: Array[String] = Array(MimeType.SPARQL_RESULTS_XML, MimeType.RDF_XML, MimeType.ANY)
+  val SPARQL_XML: Array[String] = Array(MimeType.SPARQL_RESULTS_XML)
+  val SPARQL_JSON: Array[String] = Array(MimeType.SPARQL_RESULTS_JSON, MimeType.JAVASCRIPT, MimeType.JSON)
+  val RDF_XML: Array[String] = Array(MimeType.RDF_XML)
+  val RDF_N3: Array[String] = Array(MimeType.RDF_N3, MimeType.RDF_NTRIPLES, MimeType.RDF_TURTLE, MimeType.RDF_N3_APP,
+    MimeType.RDF_N3_TXT, MimeType.RDF_TURTLE_TXT)
+  val RDF_JSONLD: Array[String] = Array(MimeType.JSON_LD_X, MimeType.JSON_LD)
+  val ALL: Array[String] = Array(MimeType.ANY)
+  val RDF_POSSIBLE: Array[String] = RDF_XML ++ RDF_N3
+  val SPARQL_POSSIBLE: Array[String] = SPARQL_XML ++ SPARQL_JSON ++ RDF_XML ++ RDF_N3
 
+  val AGENT: String = s"sparqlwrapper scala client v${BuildInfo.version}"
 }
