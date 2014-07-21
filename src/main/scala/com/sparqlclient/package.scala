@@ -38,4 +38,36 @@ package object sparqlclient {
     val POSTDIRECTLY = "postdirectly"
   }
 
+  object MimeType extends Enumeration {
+    type MimeType = String
+    val ANY = "*/*"
+    val SPARQL_RESULTS_XML = "application/sparql-results+xml"
+    val SPARQL_RESULTS_JSON = "application/sparql-results+json"
+    val RDF_XML = "application/rdf+xml"
+    val RDF_N3 = "text/rdf+n3"
+    val RDF_N3_APP = "application/n3"
+    val RDF_N3_TXT = "text/n3"
+    val RDF_NTRIPLES = "application/n-triples"
+    val RDF_TURTLE = "application/turtle"
+    val RDF_TURTLE_TXT = "text/turtle"
+    val JAVASCRIPT = "text/javascript"
+    val JSON = "application/json"
+    val JSON_LD_X = "application/x-json+ld"
+    val JSON_LD = "application/ld+json"
+  }
+
+  object ValidMimeType extends Enumeration {
+    type ValidMimeType = Array[String]
+    val SPARQL_DEFAULT = Array(MimeType.SPARQL_RESULTS_XML, MimeType.RDF_XML, MimeType.ANY)
+    val SPARQL_XML = Array(MimeType.SPARQL_RESULTS_XML)
+    val SPARQL_JSON = Array(MimeType.SPARQL_RESULTS_JSON, MimeType.JAVASCRIPT, MimeType.JSON)
+    val RDF_XML = Array(MimeType.RDF_XML)
+    val RDF_N3 = Array(MimeType.RDF_N3, MimeType.RDF_NTRIPLES, MimeType.RDF_TURTLE, MimeType.RDF_N3_APP,
+      MimeType.RDF_N3_TXT, MimeType.RDF_TURTLE_TXT)
+    val RDF_JSONLD = Array(MimeType.JSON_LD_X, MimeType.JSON_LD)
+    val ALL = Array(MimeType.ANY)
+    val RDF_POSSIBLE = RDF_XML ++ RDF_N3
+    val SPARQL_POSSIBLE = SPARQL_XML ++ SPARQL_JSON ++ RDF_XML ++ RDF_N3
+  }
+
 }
