@@ -32,4 +32,10 @@ package object sparqlclient {
     val ADD = "ADD"
   }
 
+  object RequestMethod extends Enumeration {
+    type RequestMethod = String
+    val URLENCODED = "urlencoded"
+    val POSTDIRECTLY = "postdirectly"
+  }
+
 }
