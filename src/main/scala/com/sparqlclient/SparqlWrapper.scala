@@ -10,14 +10,12 @@ import scala.util.matching.Regex
  */
 class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val format: String = DataFormat.XML,
                     val defaultGraph: Option[URL] = None, val agent: String = AGENT) {
-  val pattern: Regex = """
-       ((?P<base>(\s*BASE\s*<.*?>)\s*)|(?P<prefixes>(\s*PREFIX\s+.+:\s*<.*?>)\s*))*
-       (?P<queryType>(CONSTRUCT|SELECT|ASK|DESCRIBE|INSERT|DELETE|CREATE|CLEAR|DROP|LOAD|COPY|MOVE|ADD))
-                       """.r
+  val pattern: Regex = new Regex( """(?i)((\s*BASE\s*<.*?>)\s*|(\s*PREFIX\s+.+:\s*<.*?>)\s*)*(CONSTRUCT|SELECT|ASK|DESCRIBE|INSERT|DELETE|CREATE|CLEAR|DROP|LOAD|COPY|MOVE|ADD)""",
+    "g0","base", "prefixes", "queryType")
 
   private val updateEndpoint: URL = update.getOrElse(endpoint)
-  private val user: Option[String] = None
-  private val pass: Option[String] = None
+  private var user: Option[String] = None
+  private var pass: Option[String] = None
   private val defaultReturnFormat: String = if (ALLOWED_DATA_FORMATS.contains(format)) {
     format
   } else {
@@ -27,7 +25,7 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
   private val parameters: mutable.Map[String, String] = mutable.Map.empty[String, String]
   private var method: String = GET
   private var queryType: String = QueryType.SELECT
-  private var queryString: String = """SELECT * WHERE{ ?s ?p ?o }"""
+  private var queryString: String = DEFAULT_SPARQL
   private var timeout: Option[Int] = None
   private var requestMethod: String = RequestMethod.URLENCODED
 
@@ -35,6 +33,7 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
 
 
   def resetQuery() = {
+    println("BEFORE")
     parameters.clear()
     defaultGraph match {
       case Some(graph) => parameters.put("default-graph-uri", graph.toString)
@@ -42,9 +41,10 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
     returnFormat = defaultReturnFormat
     method = GET
     queryType = QueryType.SELECT
-    queryString = """SELECT * WHERE{ ?s ?p ?o }"""
+    queryString = DEFAULT_SPARQL
     timeout = None
     requestMethod = RequestMethod.URLENCODED
+    println("HERE")
   }
 
   def setReturnFormat(format: String) = {
@@ -66,15 +66,46 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
   }
 
   def addParameter(name: String, value: String): Boolean = {
-    name match {
-      case "query" => false
-      case _ =>
-        if (parameters.contains(name)) {
-          parameters.put(name, )
-        } else {
+    if (SPARQL_PARAMS.contains(name)) {
+      false
+    } else {
+      //TODO: implement
+      true
+    }
+  }
 
+  def clearParameter(name: String): Boolean = {
+    if (SPARQL_PARAMS.contains(name)) {
+      false
+    } else {
+      parameters.remove(name) match {
+        case Some(value) => true
+        case None => false
+      }
+    }
+  }
+
+  def setCredentials(user: String, pass: String) = {
+    this.user = Some(user)
+    this.pass = Some(pass)
+  }
+
+  def setQuery(query: String) = {
+    queryString = query
+    queryType = parseQueryType(query)
+  }
+
+  def parseQueryType(query: String): String = {
+    pattern.findFirstMatchIn(query) match {
+      case Some(firstMatch) =>
+        val qType: String = firstMatch.group("queryType").toUpperCase
+        println(qType)
+        if (ALLOWED_QUERY_TYPES.contains(qType)) {
+          qType
+        } else {
+          QueryType.SELECT
         }
-        true
+      case None => QueryType.SELECT
     }
   }
 }

@@ -1,6 +1,7 @@
 package com
 
 import dispatch.BuildInfo
+import scala.collection.JavaConversions._
 
 /**
  * Created by basca on 21/07/14.
@@ -17,7 +18,8 @@ package object sparqlclient {
     val RDF = "rdf"
   }
 
-  val ALLOWED_DATA_FORMATS: Array[String] = DataFormat.values.toArray[String]
+  val ALLOWED_DATA_FORMATS: Array[String] = Array(DataFormat.JSON, DataFormat.JSONLD, DataFormat.XML,
+    DataFormat.TURTLE, DataFormat.N3, DataFormat.RDF)
 
   object QueryType extends Enumeration {
     type QueryType = String
@@ -36,7 +38,9 @@ package object sparqlclient {
     val ADD = "ADD"
   }
 
-  val ALLOWED_QUERY_TYPES: Array[String] = QueryType.values.toArray[String]
+  val ALLOWED_QUERY_TYPES: Array[String] = Array(QueryType.SELECT, QueryType.CONSTRUCT, QueryType.ASK,
+    QueryType.DESCRIBE, QueryType.INSERT, QueryType.DELETE, QueryType.CREATE, QueryType.CLEAR, QueryType.DROP,
+    QueryType.LOAD, QueryType.COPY, QueryType.MOVE, QueryType.ADD)
 
   object RequestMethod extends Enumeration {
     type RequestMethod = String
@@ -44,7 +48,7 @@ package object sparqlclient {
     val POSTDIRECTLY = "postdirectly"
   }
 
-  val ALLOWED_REQUESTS_METHODS: Array[String] = RequestMethod.values.toArray[String]
+  val ALLOWED_REQUESTS_METHODS: Array[String] = Array(RequestMethod.URLENCODED, RequestMethod.POSTDIRECTLY)
 
   object MimeType extends Enumeration {
     type MimeType = String
@@ -79,4 +83,8 @@ package object sparqlclient {
 
   val GET: String = "GET"
   val POST: String = "POST"
+
+  val DEFAULT_SPARQL = """SELECT * WHERE{ ?s ?p ?o }"""
+
+  val SPARQL_PARAMS: Array[String] = Array("query")
 }
