@@ -21,7 +21,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   private val GROUP_QUERY_TYPE: Int = 4
   private val base64encoder: sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder()
 
-  private val parameters: mutable.Map[String, ListBuffer[String]] = mutable.Map.empty[String, ListBuffer[String]].withDefaultValue(ListBuffer())
+  private val parameters: mutable.Map[String, ListBuffer[String]] = mutable.Map.empty[String, ListBuffer[String]].withDefaultValue(new ListBuffer())
   private val updateEndpoint: URL = update.getOrElse(endpoint)
   private val defaultReturnFormat: String = if (ALLOWED_DATA_FORMATS.contains(format)) {
     format
@@ -199,9 +199,9 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
         case GET =>
           var req: Req = url(endpoint.toString)
           parameters("query").append(queryString)
-          req = req.setQueryParameters(get_parameters)
           println("--------------------------------------------------------")
           println(parameters)
+          req = req.setQueryParameters(get_parameters)
           println(get_parameters)
           println(req.toRequest.toString)
           println("--------------------------------------------------------")
