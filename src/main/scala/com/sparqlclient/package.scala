@@ -16,10 +16,11 @@ package object sparqlclient {
     val TURTLE = "n3"
     val N3 = "n3"
     val RDF = "rdf"
+    val CSV = "csv"
   }
 
   val ALLOWED_DATA_FORMATS: Array[String] = Array(DataFormat.JSON, DataFormat.JSONLD, DataFormat.XML,
-    DataFormat.TURTLE, DataFormat.N3, DataFormat.RDF)
+    DataFormat.TURTLE, DataFormat.N3, DataFormat.RDF, DataFormat.CSV)
 
   object QueryType extends Enumeration {
     type QueryType = String
@@ -58,6 +59,8 @@ package object sparqlclient {
     val ANY = "*/*"
     val SPARQL_RESULTS_XML = "application/sparql-results+xml"
     val SPARQL_RESULTS_JSON = "application/sparql-results+json"
+    val SPARQL_UPDATE = "application/sparql-update"
+    val URL_FORM_ENCODED = "application/x-www-form-urlencoded"
     val RDF_XML = "application/rdf+xml"
     val RDF_N3 = "text/rdf+n3"
     val RDF_N3_APP = "application/n3"
@@ -91,4 +94,5 @@ package object sparqlclient {
   val DEFAULT_SPARQL = """SELECT * WHERE{ ?s ?p ?o }"""
 
   val SPARQL_PARAMS: Array[String] = Array("query")
+  val RETURN_FORMAT_PARAMS: Array[String] = Array("format", "output", "results")
 }
