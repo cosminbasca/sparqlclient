@@ -1,6 +1,6 @@
 import java.net.URL
 
-import com.sparqlclient.SparqlWrapper
+import com.sparqlclient.SparqlClient
 import com.sparqlclient.ALLOWED_DATA_FORMATS
 
 import scala.util.matching.Regex
@@ -17,7 +17,7 @@ SELECT * WHERE {
             """.trim
 
 
-val w = new SparqlWrapper(new URL("http://haha.com"))
+val w = new SparqlClient(new URL("http://haha.com"))
 //println(w.parseQueryType(query))
 
 val enc = new sun.misc.BASE64Encoder()

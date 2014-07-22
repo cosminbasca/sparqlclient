@@ -10,7 +10,7 @@ import dispatch._, Defaults._
 /**
  * Created by cosmin on 21/07/14.
  */
-class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val format: String = DataFormat.XML,
+class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format: String = DataFormat.XML,
                     val defaultGraph: Option[URL] = None, val agent: String = AGENT) {
   private val pattern: Regex = """(?i)((\s*BASE\s*<.*?>)\s*|(\s*PREFIX\s+.+:\s*<.*?>)\s*)*(CONSTRUCT|SELECT|ASK|DESCRIBE|INSERT|DELETE|CREATE|CLEAR|DROP|LOAD|COPY|MOVE|ADD)""".r
   private val GROUP_BASE: Int = 2
@@ -19,32 +19,31 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
   private val base64encoder: sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder()
 
   private val updateEndpoint: URL = update.getOrElse(endpoint)
-  private var user: Option[String] = None
-  private var pass: Option[String] = None
   private val defaultReturnFormat: String = if (ALLOWED_DATA_FORMATS.contains(format)) {
     format
   } else {
     DataFormat.XML
   }
   private var returnFormat: String = defaultReturnFormat
-  private val parameters: mutable.Map[String, String] = mutable.Map.empty[String, String]
-  private var method: String = GET
   private var queryType: String = QueryType.SELECT
   private var queryString: String = DEFAULT_SPARQL
   private var timeout: Option[Int] = None
   private var requestMethod: String = RequestMethod.URLENCODED
 
-  resetQuery()
+
+  private var request: Req = url(endpoint.toString)
+
+  reset()
 
 
-  def resetQuery() = {
-    parameters.clear()
+  private def reset() = {
+    request = url(endpoint.toString).GET
     defaultGraph match {
-      case Some(graph) => parameters.put("default-graph-uri", graph.toString)
+      case Some(graph) =>
+        request.addParameter("default-graph-uri", graph.toString)
       case None =>
     }
     returnFormat = defaultReturnFormat
-    method = GET
     queryType = QueryType.SELECT
     queryString = DEFAULT_SPARQL
     timeout = None
@@ -73,7 +72,7 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
     if (SPARQL_PARAMS.contains(name)) {
       false
     } else {
-      //TODO: implement
+      request.addParameter(name, value)
       true
     }
   }
@@ -157,7 +156,6 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
       val credentials: String = s"${user.get}:${pass.get}"
       request.setHeader("Authorization", s"Basic ${base64encoder.encode(credentials.getBytes(StandardCharsets.UTF_8))}")
     }
-
     request
   }
 
