@@ -74,7 +74,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   }
 
   private def appendParameter(name: String, value: String) = {
-    val values:Seq[String] = parameters.get(name) match {
+    val values: Seq[String] = parameters.get(name) match {
       case Some(paramValues) => paramValues ++ Seq(value)
       case None => Seq(value)
     }
@@ -202,10 +202,6 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
       }
     }
 
-    println("--------------------------------------------------------")
-    println(request.toRequest.toString)
-    println("--------------------------------------------------------")
-
     request.setHeader("User-Agent", agent)
     request.setHeader("Accept", getAcceptHeader)
     if (user.nonEmpty && pass.nonEmpty) {
@@ -213,6 +209,10 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
       request.setHeader("Authorization", s"Basic ${base64encoder.encode(credentials.getBytes(StandardCharsets.UTF_8))}")
     }
     request
+  }
+
+  override def toString: String = {
+    createRequest.toRequest.toString
   }
 
   private def queryRequest: Future[String] = {
@@ -224,8 +224,12 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     http(request OK as.String)
   }
 
-  def waitForResults(duration:Int=10): String = {
+  def waitForResults(duration: Int = 10): String = {
     Await.result[String](queryRequest, Duration(duration, "seconds"))
+  }
+
+  def shutdown() = {
+    Http.shutdown()
   }
 
 }

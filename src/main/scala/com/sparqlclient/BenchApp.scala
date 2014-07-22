@@ -22,5 +22,6 @@ object BenchApp extends App {
     dbpedia.setReturnFormat(DataFormat.CSV)
     val str = dbpedia.waitForResults()
     println(str)
+    dbpedia.shutdown()
   }
 }
