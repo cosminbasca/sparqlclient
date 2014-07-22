@@ -15,14 +15,7 @@ SELECT * WHERE {
   ?p rdfs:label ?n .
 }
             """.trim
-//pattern.findFirstMatchIn(query).get.group("base")
-//pattern.findFirstMatchIn(query).get.group("prefixes")
-//pattern.findFirstMatchIn(query).get.group("queryType")
-//
-//pattern.findPrefixMatchOf(query).get.group(4)
 
-println(1)
+
 val w = new SparqlWrapper(new URL("http://haha.com"))
-println(2)
-w.parseQueryType(query)
-println(3)
+//println(w.parseQueryType(query))

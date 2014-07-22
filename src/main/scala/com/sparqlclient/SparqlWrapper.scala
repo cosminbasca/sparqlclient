@@ -10,8 +10,10 @@ import scala.util.matching.Regex
  */
 class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val format: String = DataFormat.XML,
                     val defaultGraph: Option[URL] = None, val agent: String = AGENT) {
-  val pattern: Regex = new Regex( """(?i)((\s*BASE\s*<.*?>)\s*|(\s*PREFIX\s+.+:\s*<.*?>)\s*)*(CONSTRUCT|SELECT|ASK|DESCRIBE|INSERT|DELETE|CREATE|CLEAR|DROP|LOAD|COPY|MOVE|ADD)""",
-    "g0","base", "prefixes", "queryType")
+  private val pattern: Regex = """(?i)((\s*BASE\s*<.*?>)\s*|(\s*PREFIX\s+.+:\s*<.*?>)\s*)*(CONSTRUCT|SELECT|ASK|DESCRIBE|INSERT|DELETE|CREATE|CLEAR|DROP|LOAD|COPY|MOVE|ADD)""".r
+  private val GROUP_BASE: Int = 2
+  private val GROUP_PREFIXE: Int = 3
+  private val GROUP_QUERY_TYPE: Int = 4
 
   private val updateEndpoint: URL = update.getOrElse(endpoint)
   private var user: Option[String] = None
@@ -97,8 +99,7 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
   private def parseQueryType(query: String): String = {
     pattern.findFirstMatchIn(query) match {
       case Some(firstMatch) =>
-        val qType: String = firstMatch.group("queryType").toUpperCase
-        println(qType)
+        val qType: String = firstMatch.group(GROUP_QUERY_TYPE).toUpperCase
         if (ALLOWED_QUERY_TYPES.contains(qType)) {
           qType
         } else {
