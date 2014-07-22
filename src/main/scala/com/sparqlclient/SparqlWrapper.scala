@@ -33,10 +33,10 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
 
 
   def resetQuery() = {
-    println("BEFORE")
     parameters.clear()
     defaultGraph match {
       case Some(graph) => parameters.put("default-graph-uri", graph.toString)
+      case None =>
     }
     returnFormat = defaultReturnFormat
     method = GET
@@ -44,7 +44,6 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
     queryString = DEFAULT_SPARQL
     timeout = None
     requestMethod = RequestMethod.URLENCODED
-    println("HERE")
   }
 
   def setReturnFormat(format: String) = {
@@ -95,7 +94,7 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
     queryType = parseQueryType(query)
   }
 
-  def parseQueryType(query: String): String = {
+  private def parseQueryType(query: String): String = {
     pattern.findFirstMatchIn(query) match {
       case Some(firstMatch) =>
         val qType: String = firstMatch.group("queryType").toUpperCase
