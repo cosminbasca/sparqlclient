@@ -17,9 +17,12 @@ object BenchApp extends App {
     WHERE { <http://dbpedia.org/resource/Asturias> rdfs:label ?label }
     LIMIT 100
                       """)
-    dbpedia.setMethod("GET")
+    dbpedia.setMethod(POST)
+
 //    dbpedia.setRequestMethod(RequestMethod.POSTDIRECTLY)
+//    dbpedia.setReturnFormat(DataFormat.CSV)
     dbpedia.setReturnFormat(DataFormat.CSV)
+    println(dbpedia)
     val str = dbpedia.waitForResults()
     println(str)
     dbpedia.shutdown()
