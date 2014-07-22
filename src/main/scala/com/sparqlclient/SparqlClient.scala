@@ -197,9 +197,14 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
           }
           req
         case GET =>
-          val req: Req = url(endpoint.toString)
+          var req: Req = url(endpoint.toString)
           parameters("query").append(queryString)
-          req.setQueryParameters(get_parameters)
+          req = req.setQueryParameters(get_parameters)
+          println("--------------------------------------------------------")
+          println(parameters)
+          println(get_parameters)
+          println(req.toRequest.toString)
+          println("--------------------------------------------------------")
           req
       }
     }
