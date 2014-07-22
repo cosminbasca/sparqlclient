@@ -21,7 +21,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   private val GROUP_QUERY_TYPE: Int = 4
   private val base64encoder: sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder()
 
-  private val parameters: mutable.Map[String, ListBuffer[String]] = mutable.Map.empty[String, ListBuffer[String]].withDefaultValue(new ListBuffer())
+  private val parameters: mutable.Map[String, Seq[String]] = mutable.Map.empty[String, Seq[String]]
   private val updateEndpoint: URL = update.getOrElse(endpoint)
   private val defaultReturnFormat: String = if (ALLOWED_DATA_FORMATS.contains(format)) {
     format
@@ -44,7 +44,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     parameters.clear()
     defaultGraph match {
       case Some(graph) =>
-        parameters("default-graph-uri").append(graph.toString)
+        addParameter("default-graph-uri", graph.toString)
       case None =>
     }
     returnFormat = defaultReturnFormat
@@ -77,7 +77,11 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     if (SPARQL_PARAMS.contains(name)) {
       false
     } else {
-      parameters(name).append(value)
+      val values:Seq[String] = parameters.get(name) match {
+        case Some(paramValues) => paramValues ++ Seq(value)
+        case None => Seq(value)
+      }
+      parameters(name) = values
       true
     }
   }
@@ -153,61 +157,50 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   private def createRequest: Req = {
     // return format as defined by various endpoints ... this is not cool, and should be standardised in the future
     for (fmt <- RETURN_FORMAT_PARAMS)
-      parameters(fmt).append(returnFormat)
-
-
-    def get_parameters: Map[String, Seq[String]] = {
-      parameters.map {
-        case (k, v) => (k, v.toSeq)
-      }.toMap
-    }
+      addParameter(fmt, returnFormat)
 
     // create the request according to how it was specified
     val request: Req = if (isSparqlUpdateRequest) {
       if (method != POST) {
         throw new UnsupportedOperationException("update operations MUST be done by POST")
       }
-
-      val req = url(updateEndpoint.toString).POST
       requestMethod match {
         case RequestMethod.POSTDIRECTLY =>
-          req.addHeader("Content-Type", MimeType.SPARQL_UPDATE)
-          req.setQueryParameters(get_parameters)
-          req.setBody(queryString)
+          url(updateEndpoint.toString).POST.
+            addHeader("Content-Type", MimeType.SPARQL_UPDATE).
+            setQueryParameters(parameters.toMap).
+            setBody(queryString)
         case _ =>
-          parameters("update").append(queryString)
-          req.setHeader("Content-Type", MimeType.URL_FORM_ENCODED)
-          req.setParameters(get_parameters)
+          addParameter("update", queryString)
+          url(updateEndpoint.toString).POST.
+            setHeader("Content-Type", MimeType.URL_FORM_ENCODED).
+            setParameters(parameters.toMap)
       }
-
-      req
     } else {
       method match {
         case POST =>
-          val req: Req = url(endpoint.toString).POST
           requestMethod match {
             case RequestMethod.POSTDIRECTLY =>
-              req.addHeader("Content-Type", MimeType.SPARQL_UPDATE)
-              req.setQueryParameters(get_parameters)
-              req.setBody(queryString)
+              url(endpoint.toString).POST.
+                addHeader("Content-Type", MimeType.SPARQL_UPDATE).
+                setQueryParameters(parameters.toMap).
+                setBody(queryString)
             case _ =>
-              parameters("query").append(queryString)
-              req.setHeader("Content-Type", MimeType.URL_FORM_ENCODED)
-              req.setParameters(get_parameters)
+              addParameter("query", queryString)
+              url(endpoint.toString).POST.
+                setHeader("Content-Type", MimeType.URL_FORM_ENCODED).
+                setParameters(parameters.toMap)
           }
-          req
         case GET =>
-          var req: Req = url(endpoint.toString)
-          parameters("query").append(queryString)
-          println("--------------------------------------------------------")
-          println(parameters)
-          req = req.setQueryParameters(get_parameters)
-          println(get_parameters)
-          println(req.toRequest.toString)
-          println("--------------------------------------------------------")
-          req
+          addParameter("query", queryString)
+          url(endpoint.toString).
+            setQueryParameters(parameters.toMap)
       }
     }
+
+    println("--------------------------------------------------------")
+    println(request.toRequest.toString)
+    println("--------------------------------------------------------")
 
     request.setHeader("User-Agent", agent)
     request.setHeader("Accept", getAcceptHeader)
