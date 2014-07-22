@@ -73,15 +73,19 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     }
   }
 
+  private def appendParameter(name: String, value: String) = {
+    val values:Seq[String] = parameters.get(name) match {
+      case Some(paramValues) => paramValues ++ Seq(value)
+      case None => Seq(value)
+    }
+    parameters(name) = values
+  }
+
   def addParameter(name: String, value: String): Boolean = {
     if (SPARQL_PARAMS.contains(name)) {
       false
     } else {
-      val values:Seq[String] = parameters.get(name) match {
-        case Some(paramValues) => paramValues ++ Seq(value)
-        case None => Seq(value)
-      }
-      parameters(name) = values
+      appendParameter(name, value)
       true
     }
   }
@@ -157,7 +161,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   private def createRequest: Req = {
     // return format as defined by various endpoints ... this is not cool, and should be standardised in the future
     for (fmt <- RETURN_FORMAT_PARAMS)
-      addParameter(fmt, returnFormat)
+      appendParameter(fmt, returnFormat)
 
     // create the request according to how it was specified
     val request: Req = if (isSparqlUpdateRequest) {
@@ -171,7 +175,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
             setQueryParameters(parameters.toMap).
             setBody(queryString)
         case _ =>
-          addParameter("update", queryString)
+          appendParameter("update", queryString)
           url(updateEndpoint.toString).POST.
             setHeader("Content-Type", MimeType.URL_FORM_ENCODED).
             setParameters(parameters.toMap)
@@ -186,13 +190,13 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
                 setQueryParameters(parameters.toMap).
                 setBody(queryString)
             case _ =>
-              addParameter("query", queryString)
+              appendParameter("query", queryString)
               url(endpoint.toString).POST.
                 setHeader("Content-Type", MimeType.URL_FORM_ENCODED).
                 setParameters(parameters.toMap)
           }
         case GET =>
-          addParameter("query", queryString)
+          appendParameter("query", queryString)
           url(endpoint.toString).
             setQueryParameters(parameters.toMap)
       }
