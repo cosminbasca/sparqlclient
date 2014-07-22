@@ -1,9 +1,11 @@
 package com.sparqlclient
 
 import java.net.URL
+import java.nio.charset.{StandardCharsets, Charset}
 
 import scala.collection.mutable
 import scala.util.matching.Regex
+import dispatch._, Defaults._
 
 /**
  * Created by cosmin on 21/07/14.
@@ -14,6 +16,7 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
   private val GROUP_BASE: Int = 2
   private val GROUP_PREFIXE: Int = 3
   private val GROUP_QUERY_TYPE: Int = 4
+  private val base64encoder: sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder()
 
   private val updateEndpoint: URL = update.getOrElse(endpoint)
   private var user: Option[String] = None
@@ -108,4 +111,54 @@ class SparqlWrapper(val endpoint: URL, val update: Option[URL] = None, val forma
       case None => QueryType.SELECT
     }
   }
+
+  def setMethod(method: String) = {
+    if (ALLOWED_REQUESTS.contains(method)) {
+      this.method = method
+    }
+  }
+
+  def isSparqlUpdateRequest: Boolean = {
+    INSERT_QUERY_TYPE.contains(queryType)
+  }
+
+  def isSparqlQueryRequest: Boolean = {
+    !isSparqlUpdateRequest
+  }
+
+  private def getAcceptHeader: String = {
+    queryType match {
+      case QueryType.SELECT | QueryType.ASK =>
+        returnFormat match {
+          case DataFormat.XML => SPARQL_XML.mkString(",")
+          case DataFormat.JSON => SPARQL_JSON.mkString(",")
+          case _ => ALL.mkString(",")
+        }
+      case QueryType.INSERT | QueryType.DELETE =>
+        MimeType.ANY
+      case _ =>
+        returnFormat match {
+          case DataFormat.N3 | DataFormat.TURTLE => RDF_N3.mkString(",")
+          case DataFormat.XML => RDF_XML.mkString(",")
+          //          case DataFormat.JSONLD => RDF_JSONLD.mkString(",")
+          case _ => ALL.mkString(",")
+        }
+    }
+  }
+
+  private def createReuqest: Req = {
+    val request: Req = null
+    if (isSparqlUpdateRequest) {
+
+    }
+    request.setHeader("User-Agent", agent)
+    request.setHeader("Accept", getAcceptHeader)
+    if (user.nonEmpty && pass.nonEmpty) {
+      val credentials: String = s"${user.get}:${pass.get}"
+      request.setHeader("Authorization", s"Basic ${base64encoder.encode(credentials.getBytes(StandardCharsets.UTF_8))}")
+    }
+
+    request
+  }
+
 }

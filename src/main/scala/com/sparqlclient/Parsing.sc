@@ -19,3 +19,10 @@ SELECT * WHERE {
 
 val w = new SparqlWrapper(new URL("http://haha.com"))
 //println(w.parseQueryType(query))
+
+val enc = new sun.misc.BASE64Encoder()
+
+enc.encode( "user:pass".getBytes())
+enc.encode( "user:pass".getBytes())
+enc.encode( "user:pass".getBytes())
+enc.encode( "user:pass".getBytes())

@@ -42,6 +42,9 @@ package object sparqlclient {
     QueryType.DESCRIBE, QueryType.INSERT, QueryType.DELETE, QueryType.CREATE, QueryType.CLEAR, QueryType.DROP,
     QueryType.LOAD, QueryType.COPY, QueryType.MOVE, QueryType.ADD)
 
+  val INSERT_QUERY_TYPE: Array[String] = Array(QueryType.INSERT, QueryType.DELETE, QueryType.CREATE, QueryType.CLEAR,
+    QueryType.DROP, QueryType.LOAD, QueryType.COPY, QueryType.MOVE, QueryType.ADD)
+
   object RequestMethod extends Enumeration {
     type RequestMethod = String
     val URLENCODED = "urlencoded"
@@ -83,6 +86,7 @@ package object sparqlclient {
 
   val GET: String = "GET"
   val POST: String = "POST"
+  val ALLOWED_REQUESTS: Array[String] = Array(GET, POST)
 
   val DEFAULT_SPARQL = """SELECT * WHERE{ ?s ?p ?o }"""
 
