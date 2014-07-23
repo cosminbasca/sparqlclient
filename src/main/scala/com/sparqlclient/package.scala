@@ -1,6 +1,7 @@
 package com
 
-import dispatch.BuildInfo
+import com.avalanche.BuildInfo
+
 import scala.collection.JavaConversions._
 
 /**
@@ -99,7 +100,7 @@ package object sparqlclient {
   val RDF_POSSIBLE: Array[String] = RDF_XML ++ RDF_N3
   val SPARQL_POSSIBLE: Array[String] = SPARQL_XML ++ SPARQL_JSON ++ RDF_XML ++ RDF_N3
 
-  val AGENT: String = s"sparqlwrapper scala client v${BuildInfo.version}"
+  val AGENT: String = s"SparqlClient scala sparql client v${BuildInfo.version}"
 
   val GET: String = "GET"
   val POST: String = "POST"

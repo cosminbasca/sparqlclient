@@ -17,9 +17,9 @@ object BenchApp extends App {
     SELECT ?p ?label
     WHERE { <http://dbpedia.org/resource/Asturias> ?p ?label }
                 """
-//    println(dbpedia)
+    println(dbpedia)
 
-    for (results <- dbpedia(query)) {
+    for (results <- dbpedia(query, 10)) {
       println(results.toList)
     }
 
@@ -28,6 +28,5 @@ object BenchApp extends App {
 
     println("done")
     dbpedia.shutdown()
-    println("after shutdown ... ")
   }
 }

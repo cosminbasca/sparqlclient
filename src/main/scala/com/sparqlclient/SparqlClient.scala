@@ -7,7 +7,7 @@ import com.ning.http.client.Response
 import com.sparqlclient.rdf.RdfTerm
 
 import scala.collection.mutable
-import scala.concurrent.Await
+import scala.concurrent.{Promise, Await}
 import scala.concurrent.duration.Duration
 import scala.util.matching.Regex
 import dispatch._, Defaults._
@@ -17,7 +17,7 @@ import scala.collection.JavaConversions._
  * Created by cosmin on 21/07/14.
  */
 class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format: String = DataFormat.XML,
-                   val defaultGraph: Option[URL] = None, val agent: String = AGENT) {
+                   val defaultGraph: Option[URL] = None, val agent: String = AGENT, connectionTimeout: Int = 60) {
   // -------------------------------------------------------------------------------------------------------------------
   //
   // internal state
@@ -37,7 +37,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   private var queryString: String = DEFAULT_SPARQL
   private var method: String = GET
   private var requestMethod: String = RequestMethod.URLENCODED
-  private var http: Http = Http.configure(_.setAllowPoolingConnection(true))
+  private val http: Http = Http.configure(_.setAllowPoolingConnection(true).setConnectionTimeoutInMs(connectionTimeout / 1000))
 
   // reset internal state on initialisation
   reset()
@@ -65,10 +65,6 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     if (ALLOWED_DATA_FORMATS.contains(format)) {
       returnFormat = format
     }
-  }
-
-  def setConnectionTimeout(timeout: Int) = {
-    http = Http.configure(_.setAllowPoolingConnection(true).setConnectionTimeoutInMs(timeout / 1000))
   }
 
   def setRequestMethod(method: String) = {
@@ -213,52 +209,71 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     http(createRequest OK as.String)
   }
 
-  def rawResults(duration: Int = 10): String = {
+  def rawResults(duration: Int): String = {
     Await.result[String](fetchResponseAsString, Duration(duration, "seconds"))
   }
 
-  def queryResults(duration: Int = 10): Iterator[Seq[RdfTerm]] = {
-    def detectDataFormat(cTypes: Seq[String]): String = {
-      if (cTypes.nonEmpty) {
-        for (contentType <- cTypes) {
-          MIME_TYPE_DATA_FORMAT.get(contentType.split(";").head.trim) match {
-            case Some(dataFormat) =>
-              return dataFormat
-            case None =>
-          }
-        }
-        returnFormat
-      } else {
-        returnFormat
-      }
-    }
+  def rawResults: Future[String] = {
+    fetchResponseAsString
+  }
 
-    val response: Response = Await.result[Response](http(createRequest), Duration(duration, "seconds"))
-    if (response.getStatusCode / 100 == 2) {
-      detectDataFormat(response.getHeaders("Content-type")) match {
-        case DataFormat.JSON => convert.fromJson(rawResults())
-        case DataFormat.XML => convert.fromXML(rawResults())
-        case DataFormat.RDF => convert.fromRDF(rawResults())
-        case DataFormat.CSV => convert.fromCSV(rawResults())
-        case DataFormat.N3 | DataFormat.TURTLE | DataFormat.JSONLD =>
-          throw new UnsupportedOperationException(s"parsing n3 / turtle / json-ld is not yet supported, change the returnFormat to any fo the following: ${
-            List(
-              DataFormat.JSON, DataFormat.XML, DataFormat.RDF, DataFormat.CSV)
-          }")
-        case _ => Iterator.empty
+  private def detectDataFormat(cTypes: Seq[String]): String = {
+    if (cTypes.nonEmpty) {
+      for (contentType <- cTypes) {
+        MIME_TYPE_DATA_FORMAT.get(contentType.split(";").head.trim) match {
+          case Some(dataFormat) =>
+            return dataFormat
+          case None =>
+        }
       }
+      returnFormat
     } else {
-      Iterator.empty
+      returnFormat
     }
   }
 
-  def apply(query: String, duration: Int = 10): Iterator[Seq[RdfTerm]] = {
+  def queryResults: Future[Iterator[Seq[RdfTerm]]] = {
+    val results: Promise[Iterator[Seq[RdfTerm]]] = Promise[Iterator[Seq[RdfTerm]]]()
+    http(createRequest) onSuccess {
+      case response =>
+        val resultsIterator = if (response.getStatusCode / 100 == 2) {
+          detectDataFormat(response.getHeaders("Content-type")) match {
+            case DataFormat.JSON => convert.fromJson(response.getResponseBody)
+            case DataFormat.XML => convert.fromXML(response.getResponseBody)
+            case DataFormat.RDF => convert.fromRDF(response.getResponseBody)
+            case DataFormat.CSV => convert.fromCSV(response.getResponseBody)
+            case DataFormat.N3 | DataFormat.TURTLE | DataFormat.JSONLD =>
+              throw new UnsupportedOperationException(s"parsing n3 / turtle / json-ld is not yet supported, change the returnFormat to any fo the following: ${
+                List(
+                  DataFormat.JSON, DataFormat.XML, DataFormat.RDF, DataFormat.CSV)
+              }")
+            case _ => Iterator.empty
+          }
+        } else {
+          Iterator.empty
+        }
+        results.success(resultsIterator)
+    }
+    results.future
+  }
+
+  def queryResults(duration: Int): Iterator[Seq[RdfTerm]] = {
+    Await.result[Iterator[Seq[RdfTerm]]](queryResults, Duration(duration, "seconds"))
+  }
+
+  def apply(query: String, duration: Int): Iterator[Seq[RdfTerm]] = {
     setQuery(query)
     queryResults(duration)
   }
 
+  def apply(query: String): Future[Iterator[Seq[RdfTerm]]] = {
+    setQuery(query)
+    queryResults
+  }
+
   def shutdown() = {
     http.shutdown()
+    Http.shutdown()
   }
 
 }

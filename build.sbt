@@ -9,7 +9,7 @@ assemblySettings
 
 name := "sparqlclient"
 
-version := "0.1.4"
+version := "0.1.6"
 
 scalaVersion := "2.10.4"
 
@@ -33,7 +33,7 @@ sourceGenerators in Compile <+= buildInfo
 
 buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion)
 
-buildInfoPackage := "com.avalanche"
+buildInfoPackage := "com.sparqlclient"
 
 // ---------------------------------------------------------------------------------------------------------------------
 //
