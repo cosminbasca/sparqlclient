@@ -219,7 +219,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
 
   def query: Iterator[Seq[Node]] = {
     returnFormat match {
-      case DataFormat.JSON | DataFormat.JSONLD => convert.json(waitForResults(10))
+      case DataFormat.JSON | DataFormat.JSONLD => convert.fromJson(waitForResults(10))
       case _ => Iterator.empty
     }
   }
