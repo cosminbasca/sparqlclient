@@ -19,8 +19,8 @@ package object sparqlclient {
     val CSV = "csv"
   }
 
-  val ALLOWED_DATA_FORMATS: Array[String] = Array(DataFormat.JSON, DataFormat.JSONLD, DataFormat.XML,
-    DataFormat.TURTLE, DataFormat.N3, DataFormat.RDF, DataFormat.CSV)
+  val ALLOWED_DATA_FORMATS: Array[String] = Array(DataFormat.JSON,  DataFormat.XML, DataFormat.TURTLE, DataFormat.N3,
+    DataFormat.RDF, DataFormat.CSV)
 
   object QueryType extends Enumeration {
     type QueryType = String
@@ -95,4 +95,8 @@ package object sparqlclient {
 
   val SPARQL_PARAMS: Array[String] = Array("query")
   val RETURN_FORMAT_PARAMS: Array[String] = Array("format", "output", "results")
+
+  val XML_NS: String = "http://www.w3.org/XML/1998/namespace"
+  val RDF_NS: String = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  val SPARQL_RES_NS: String = "http://www.w3.org/2005/sparql-results#"
 }

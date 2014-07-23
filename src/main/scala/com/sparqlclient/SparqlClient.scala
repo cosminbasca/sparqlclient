@@ -217,12 +217,13 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
 
   def query: Iterator[Seq[RdfTerm]] = {
     returnFormat match {
-      case DataFormat.JSON | DataFormat.JSONLD => convert.fromJson(waitForResults(10))
-      case DataFormat.XML | DataFormat.RDF => convert.fromXML(waitForResults(10))
+      case DataFormat.JSON => convert.fromJson(waitForResults(10))
+      case DataFormat.XML => convert.fromXML(waitForResults(10))
+      case DataFormat.RDF => convert.fromRDF(waitForResults(10))
       case DataFormat.CSV => convert.fromCSV(waitForResults(10))
-      case DataFormat.N3 | DataFormat.TURTLE =>
-        throw new UnsupportedOperationException(s"parsing n3/turtle is not yet supported, change the returnFormat to any fo the following: ${Array(
-          DataFormat.JSON,DataFormat.JSONLD, DataFormat.XML, DataFormat.RDF, DataFormat.CSV)}")
+      case DataFormat.N3 | DataFormat.TURTLE | DataFormat.JSONLD =>
+        throw new UnsupportedOperationException(s"parsing n3 / turtle / json-ld is not yet supported, change the returnFormat to any fo the following: ${List(
+          DataFormat.JSON,DataFormat.XML, DataFormat.RDF, DataFormat.CSV)}")
       case _ => Iterator.empty
     }
   }

@@ -19,8 +19,9 @@ object BenchApp extends App {
     dbpedia.setMethod(POST)
 
 //    dbpedia.setReturnFormat(DataFormat.JSON)
-//    dbpedia.setReturnFormat(DataFormat.XML)
-    dbpedia.setReturnFormat(DataFormat.CSV)
+    dbpedia.setReturnFormat(DataFormat.XML)
+//    dbpedia.setReturnFormat(DataFormat.RDF)
+//    dbpedia.setReturnFormat(DataFormat.CSV)
     println(dbpedia)
     for (results <- dbpedia.query) {
       println(results.toList)
@@ -31,5 +32,6 @@ object BenchApp extends App {
 
     println("done")
     dbpedia.shutdown()
+    println("after shutdown ... ")
   }
 }

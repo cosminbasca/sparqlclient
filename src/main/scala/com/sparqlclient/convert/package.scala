@@ -6,7 +6,7 @@ import com.sparqlclient.rdf.{Literal, BNode, URIRef, RdfTerm}
 
 import scala.io.Source
 import scala.util.parsing.json.JSON
-import scala.xml.{Node, Elem, XML}
+import scala.xml.{Node, Elem, XML, NamespaceBinding}
 
 /**
  * Created by basca on 23/07/14.
@@ -46,7 +46,7 @@ package object convert {
           case "bnode" => BNode(node.text.trim)
           case "literal" =>
             val dataType: Option[Seq[Node]] = node.attribute("datatype")
-            val language: Option[Seq[Node]] = node.attribute("http://www.w3.org/XML/1998/namespace", "lang")
+            val language: Option[Seq[Node]] = node.attribute(XML_NS, "lang")
             if (language.nonEmpty) {
               Literal(node.text.trim, language.get.head.text)
             } else if (dataType.nonEmpty) {
@@ -65,6 +65,36 @@ package object convert {
     val sparql: Elem = XML.loadString(content)
     val header: Seq[String] = for (variable <- sparql \ "head") yield (variable \ "@name").text
     for (result <- (sparql \ "results" \ "result").iterator) yield
+      for (binding <- result \ "binding") yield
+        getNode(binding)
+  }
+
+
+  def fromRDF(content: String): Iterator[Seq[RdfTerm]] = {
+    def getNode(binding: Node): RdfTerm = {
+      (binding \ "value").headOption match {
+        case Some(node) =>
+          val dataType: Option[Seq[Node]] = node.attribute("datatype")
+          val language: Option[Seq[Node]] = node.attribute(XML_NS, "lang")
+          val uri: Option[Seq[Node]] = node.attribute(RDF_NS, "resource")
+
+          if (uri.nonEmpty) {
+            URIRef(uri.get.head.text)
+          } else if (language.nonEmpty) {
+            Literal(node.text.trim, language.get.head.text)
+          } else if (dataType.nonEmpty) {
+            Literal(node.text.trim, new URI(dataType.get.head.text))
+          } else {
+            Literal(node.text.trim)
+          }
+          // TODO: bnode handling is missing here ...
+        case None =>
+          throw new NoSuchFieldException(s"rdf-xml node: $binding cannot be parsed into an rdf term")
+      }
+    }
+
+    val rdf: Elem = XML.loadString(content)
+    for (result <- (rdf \ "Description" \ "solution").iterator) yield
       for (binding <- result \ "binding") yield
         getNode(binding)
   }
