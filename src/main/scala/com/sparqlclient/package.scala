@@ -19,7 +19,7 @@ package object sparqlclient {
     val CSV = "csv"
   }
 
-  val ALLOWED_DATA_FORMATS: Array[String] = Array(DataFormat.JSON,  DataFormat.XML, DataFormat.TURTLE, DataFormat.N3,
+  val ALLOWED_DATA_FORMATS: Array[String] = Array(DataFormat.JSON, DataFormat.XML, DataFormat.TURTLE, DataFormat.N3,
     DataFormat.RDF, DataFormat.CSV)
 
   object QueryType extends Enumeration {
@@ -72,7 +72,21 @@ package object sparqlclient {
     val JSON = "application/json"
     val JSON_LD_X = "application/x-json+ld"
     val JSON_LD = "application/ld+json"
+    val CSV = "text/csv"
   }
+
+  val MIME_TYPE_DATA_FORMAT: Map[String, String] = Map(
+    MimeType.SPARQL_RESULTS_XML -> DataFormat.XML,
+    MimeType.SPARQL_RESULTS_JSON -> DataFormat.JSON,
+    MimeType.JSON -> DataFormat.JSON,
+    MimeType.RDF_XML -> DataFormat.RDF,
+    MimeType.CSV -> DataFormat.CSV,
+    MimeType.RDF_N3 -> DataFormat.N3,
+    MimeType.RDF_N3_APP -> DataFormat.N3,
+    MimeType.RDF_N3_TXT -> DataFormat.N3,
+    MimeType.RDF_TURTLE -> DataFormat.TURTLE,
+    MimeType.RDF_TURTLE_TXT -> DataFormat.TURTLE
+  )
 
   val SPARQL_DEFAULT: Array[String] = Array(MimeType.SPARQL_RESULTS_XML, MimeType.RDF_XML, MimeType.ANY)
   val SPARQL_XML: Array[String] = Array(MimeType.SPARQL_RESULTS_XML)

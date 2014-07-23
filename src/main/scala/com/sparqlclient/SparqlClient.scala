@@ -3,6 +3,7 @@ package com.sparqlclient
 import java.net.URL
 import java.nio.charset.StandardCharsets
 
+import com.ning.http.client.Response
 import com.sparqlclient.rdf.RdfTerm
 
 import scala.collection.mutable
@@ -10,6 +11,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.util.matching.Regex
 import dispatch._, Defaults._
+import scala.collection.JavaConversions._
 
 /**
  * Created by cosmin on 21/07/14.
@@ -65,7 +67,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     }
   }
 
-  def setTimeout(timeout: Int) = {
+  def setConnectionTimeout(timeout: Int) = {
     http = Http.configure(_.setAllowPoolingConnection(true).setConnectionTimeoutInMs(timeout / 1000))
   }
 
@@ -211,20 +213,42 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     http(createRequest OK as.String)
   }
 
-  def waitForResults(duration: Int = 10): String = {
+  def rawResults(duration: Int = 10): String = {
     Await.result[String](fetchResponseAsString, Duration(duration, "seconds"))
   }
 
-  def query: Iterator[Seq[RdfTerm]] = {
-    returnFormat match {
-      case DataFormat.JSON => convert.fromJson(waitForResults(10))
-      case DataFormat.XML => convert.fromXML(waitForResults(10))
-      case DataFormat.RDF => convert.fromRDF(waitForResults(10))
-      case DataFormat.CSV => convert.fromCSV(waitForResults(10))
-      case DataFormat.N3 | DataFormat.TURTLE | DataFormat.JSONLD =>
-        throw new UnsupportedOperationException(s"parsing n3 / turtle / json-ld is not yet supported, change the returnFormat to any fo the following: ${List(
-          DataFormat.JSON,DataFormat.XML, DataFormat.RDF, DataFormat.CSV)}")
-      case _ => Iterator.empty
+  def queryResults(duration: Int = 10): Iterator[Seq[RdfTerm]] = {
+    def detectDataFormat(cTypes: Seq[String]): String = {
+      if (cTypes.nonEmpty) {
+        for (contentType <- cTypes) {
+          MIME_TYPE_DATA_FORMAT.get(contentType.split(";").head.trim) match {
+            case Some(dataFormat) =>
+              return dataFormat
+            case None =>
+          }
+        }
+        returnFormat
+      } else {
+        returnFormat
+      }
+    }
+
+    val response: Response = Await.result[Response](http(createRequest), Duration(duration, "seconds"))
+    if (response.getStatusCode / 100 == 2) {
+      detectDataFormat(response.getHeaders("Content-type")) match {
+        case DataFormat.JSON => convert.fromJson(rawResults())
+        case DataFormat.XML => convert.fromXML(rawResults())
+        case DataFormat.RDF => convert.fromRDF(rawResults())
+        case DataFormat.CSV => convert.fromCSV(rawResults())
+        case DataFormat.N3 | DataFormat.TURTLE | DataFormat.JSONLD =>
+          throw new UnsupportedOperationException(s"parsing n3 / turtle / json-ld is not yet supported, change the returnFormat to any fo the following: ${
+            List(
+              DataFormat.JSON, DataFormat.XML, DataFormat.RDF, DataFormat.CSV)
+          }")
+        case _ => Iterator.empty
+      }
+    } else {
+      Iterator.empty
     }
   }
 

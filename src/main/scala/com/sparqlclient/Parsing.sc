@@ -21,4 +21,4 @@ dbpedia.setReturnFormat(DataFormat.CSV)
 //  }
 //}
 
-dbpedia.waitForResults()
+dbpedia.rawResults()

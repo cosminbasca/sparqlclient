@@ -23,7 +23,7 @@ object BenchApp extends App {
 //    dbpedia.setReturnFormat(DataFormat.RDF)
 //    dbpedia.setReturnFormat(DataFormat.CSV)
     println(dbpedia)
-    for (results <- dbpedia.query) {
+    for (results <- dbpedia.queryResults()) {
       println(results.toList)
     }
 
