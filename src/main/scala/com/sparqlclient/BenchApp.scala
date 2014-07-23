@@ -19,8 +19,6 @@ object BenchApp extends App {
                       """)
     dbpedia.setMethod(POST)
 
-//    dbpedia.setRequestMethod(RequestMethod.POSTDIRECTLY)
-//    dbpedia.setReturnFormat(DataFormat.CSV)
     dbpedia.setReturnFormat(DataFormat.CSV)
     println(dbpedia)
     val str = dbpedia.waitForResults()

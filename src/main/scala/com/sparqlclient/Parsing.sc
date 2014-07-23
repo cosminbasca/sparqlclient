@@ -9,7 +9,6 @@ dbpedia.setQuery( """
     WHERE { <http://dbpedia.org/resource/Asturias> rdfs:label ?label }
     LIMIT 100
                   """)
-dbpedia.setReturnFormat(DataFormat.JSON)
+dbpedia.setReturnFormat(DataFormat.CSV)
 val str = dbpedia.waitForResults()
-println(str)
 

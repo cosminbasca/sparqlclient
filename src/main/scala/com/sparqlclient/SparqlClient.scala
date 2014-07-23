@@ -15,19 +15,18 @@ import dispatch._, Defaults._
  */
 class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format: String = DataFormat.XML,
                    val defaultGraph: Option[URL] = None, val agent: String = AGENT) {
+  // -------------------------------------------------------------------------------------------------------------------
+  //
+  // internal state
+  //
+  // -------------------------------------------------------------------------------------------------------------------
   private val pattern: Regex = """(?i)((\s*BASE\s*<.*?>)\s*|(\s*PREFIX\s+.+:\s*<.*?>)\s*)*(CONSTRUCT|SELECT|ASK|DESCRIBE|INSERT|DELETE|CREATE|CLEAR|DROP|LOAD|COPY|MOVE|ADD)""".r
-  private val GROUP_BASE: Int = 2
-  private val GROUP_PREFIXE: Int = 3
   private val GROUP_QUERY_TYPE: Int = 4
   private val base64encoder: sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder()
 
   private val parameters: mutable.Map[String, Seq[String]] = mutable.Map.empty[String, Seq[String]]
   private val updateEndpoint: URL = update.getOrElse(endpoint)
-  private val defaultReturnFormat: String = if (ALLOWED_DATA_FORMATS.contains(format)) {
-    format
-  } else {
-    DataFormat.XML
-  }
+  private val defaultReturnFormat: String = if (ALLOWED_DATA_FORMATS.contains(format)) format else DataFormat.XML
   private var user: Option[String] = None
   private var pass: Option[String] = None
   private var returnFormat: String = defaultReturnFormat
@@ -37,14 +36,19 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   private var method: String = GET
   private var requestMethod: String = RequestMethod.URLENCODED
 
+  // reset internal state on initialisation
   reset()
 
-
-  private def reset() = {
+  // -------------------------------------------------------------------------------------------------------------------
+  //
+  // the API
+  //
+  // -------------------------------------------------------------------------------------------------------------------
+  def reset() = {
     parameters.clear()
     defaultGraph match {
       case Some(graph) =>
-        addParameter("default-graph-uri", graph.toString)
+        appendParameter("default-graph-uri", graph.toString)
       case None =>
     }
     returnFormat = defaultReturnFormat
@@ -159,7 +163,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   }
 
   private def createRequest: Req = {
-    // return format as defined by various endpoints ... this is not cool, and should be standardised in the future
+    // return format as defined by various endpoints ... this is not cool, and should be standardised in the future ...
     for (fmt <- RETURN_FORMAT_PARAMS)
       appendParameter(fmt, returnFormat)
 
@@ -170,52 +174,40 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
       }
       requestMethod match {
         case RequestMethod.POSTDIRECTLY =>
-          url(updateEndpoint.toString).POST.
-            addHeader("Content-Type", MimeType.SPARQL_UPDATE).
-            setQueryParameters(parameters.toMap).
-            setBody(queryString)
+          url(updateEndpoint.toString).POST.addHeader("Content-Type", MimeType.SPARQL_UPDATE).setQueryParameters(parameters.toMap).setBody(queryString)
         case _ =>
           appendParameter("update", queryString)
-          url(updateEndpoint.toString).POST.
-            setHeader("Content-Type", MimeType.URL_FORM_ENCODED).
-            setParameters(parameters.toMap)
+          url(updateEndpoint.toString).POST.setHeader("Content-Type", MimeType.URL_FORM_ENCODED).setParameters(parameters.toMap)
       }
     } else {
       method match {
         case POST =>
           requestMethod match {
             case RequestMethod.POSTDIRECTLY =>
-              url(endpoint.toString).POST.
-                addHeader("Content-Type", MimeType.SPARQL_UPDATE).
-                setQueryParameters(parameters.toMap).
-                setBody(queryString)
+              url(endpoint.toString).POST.addHeader("Content-Type", MimeType.SPARQL_UPDATE).setQueryParameters(parameters.toMap).setBody(queryString)
             case _ =>
               appendParameter("query", queryString)
-              url(endpoint.toString).POST.
-                setHeader("Content-Type", MimeType.URL_FORM_ENCODED).
-                setParameters(parameters.toMap)
+              url(endpoint.toString).POST.setHeader("Content-Type", MimeType.URL_FORM_ENCODED).setParameters(parameters.toMap)
           }
         case GET =>
           appendParameter("query", queryString)
-          url(endpoint.toString).
-            setQueryParameters(parameters.toMap)
+          url(endpoint.toString).setQueryParameters(parameters.toMap)
       }
     }
 
-    request.setHeader("User-Agent", agent)
-    request.setHeader("Accept", getAcceptHeader)
-    if (user.nonEmpty && pass.nonEmpty) {
+    (if (user.nonEmpty && pass.nonEmpty) {
       val credentials: String = s"${user.get}:${pass.get}"
       request.setHeader("Authorization", s"Basic ${base64encoder.encode(credentials.getBytes(StandardCharsets.UTF_8))}")
-    }
-    request
+    } else {
+      request
+    }).setHeader("User-Agent", agent).setHeader("Accept", getAcceptHeader)
   }
 
   override def toString: String = {
     createRequest.toRequest.toString
   }
 
-  private def queryRequest: Future[String] = {
+  private def makeRequest: Future[String] = {
     val request: Req = createRequest
     val http: Http = timeout match {
       case Some(tout) => Http.configure(_.setAllowPoolingConnection(true).setConnectionTimeoutInMs(tout / 1000))
@@ -225,7 +217,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   }
 
   def waitForResults(duration: Int = 10): String = {
-    Await.result[String](queryRequest, Duration(duration, "seconds"))
+    Await.result[String](makeRequest, Duration(duration, "seconds"))
   }
 
   def shutdown() = {
