@@ -32,9 +32,9 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   private var returnFormat: String = defaultReturnFormat
   private var queryType: String = QueryType.SELECT
   private var queryString: String = DEFAULT_SPARQL
-  private var timeout: Option[Int] = None
   private var method: String = GET
   private var requestMethod: String = RequestMethod.URLENCODED
+  private var http:Http = Http.configure(_.setAllowPoolingConnection(true))
 
   // reset internal state on initialisation
   reset()
@@ -55,7 +55,6 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     queryType = QueryType.SELECT
     method = GET
     queryString = DEFAULT_SPARQL
-    timeout = None
     requestMethod = RequestMethod.URLENCODED
   }
 
@@ -66,7 +65,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   }
 
   def setTimeout(timeout: Int) = {
-    this.timeout = Some(timeout)
+    http = Http.configure(_.setAllowPoolingConnection(true).setConnectionTimeoutInMs(timeout / 1000))
   }
 
   def setRequestMethod(method: String) = {
@@ -207,21 +206,16 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     createRequest.toRequest.toString
   }
 
-  private def makeRequest: Future[String] = {
-    val request: Req = createRequest
-    val http: Http = timeout match {
-      case Some(tout) => Http.configure(_.setAllowPoolingConnection(true).setConnectionTimeoutInMs(tout / 1000))
-      case None => Http.configure(_.setAllowPoolingConnection(true))
-    }
-    http(request OK as.String)
+  private def fetchResponseAsString: Future[String] = {
+    http(createRequest OK as.String)
   }
 
   def waitForResults(duration: Int = 10): String = {
-    Await.result[String](makeRequest, Duration(duration, "seconds"))
+    Await.result[String](fetchResponseAsString, Duration(duration, "seconds"))
   }
 
   def shutdown() = {
-    Http.shutdown()
+    http.shutdown()
   }
 
 }
