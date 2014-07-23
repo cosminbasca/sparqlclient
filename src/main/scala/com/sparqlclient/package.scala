@@ -1,7 +1,6 @@
 package com
 
-import com.avalanche.BuildInfo
-
+import com.sparqlclient.BuildInfo
 import scala.collection.JavaConversions._
 
 /**
