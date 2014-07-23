@@ -257,3 +257,19 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   }
 
 }
+
+object SparqlClient {
+  def apply(endpoint: String, update: Option[String] = None, format: String = DataFormat.XML,
+            defaultGraph: Option[String] = None,
+            method: String = POST, requestMethod: String = RequestMethod.URLENCODED): SparqlClient = {
+    val client = new SparqlClient(
+      new URL(endpoint),
+      update = if (update.nonEmpty) Some(new URL(update.get)) else None,
+      format = format,
+      defaultGraph = if (defaultGraph.nonEmpty) Some(new URL(defaultGraph.get)) else None
+    )
+    client.setMethod(method)
+    client.setRequestMethod(requestMethod)
+    client
+  }
+}
