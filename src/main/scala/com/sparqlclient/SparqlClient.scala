@@ -1,13 +1,11 @@
 package com.sparqlclient
 
 import java.net.URL
-import java.nio.charset.{StandardCharsets, Charset}
+import java.nio.charset.StandardCharsets
 
-import com.sparqlclient.rdf.Node
-import com.sparqlclient.convert
+import com.sparqlclient.rdf.RdfTerm
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.util.matching.Regex
@@ -37,7 +35,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   private var queryString: String = DEFAULT_SPARQL
   private var method: String = GET
   private var requestMethod: String = RequestMethod.URLENCODED
-  private var http:Http = Http.configure(_.setAllowPoolingConnection(true))
+  private var http: Http = Http.configure(_.setAllowPoolingConnection(true))
 
   // reset internal state on initialisation
   reset()
@@ -217,9 +215,14 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     Await.result[String](fetchResponseAsString, Duration(duration, "seconds"))
   }
 
-  def query: Iterator[Seq[Node]] = {
+  def query: Iterator[Seq[RdfTerm]] = {
     returnFormat match {
       case DataFormat.JSON | DataFormat.JSONLD => convert.fromJson(waitForResults(10))
+      case DataFormat.XML | DataFormat.RDF => convert.fromXML(waitForResults(10))
+      case DataFormat.CSV => convert.fromCSV(waitForResults(10))
+      case DataFormat.N3 | DataFormat.TURTLE =>
+        throw new UnsupportedOperationException(s"parsing n3/turtle is not yet supported, change the returnFormat to any fo the following: ${Array(
+          DataFormat.JSON,DataFormat.JSONLD, DataFormat.XML, DataFormat.RDF, DataFormat.CSV)}")
       case _ => Iterator.empty
     }
   }

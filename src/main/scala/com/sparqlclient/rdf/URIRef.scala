@@ -5,7 +5,7 @@ import java.net.URI
 /**
  * Created by basca on 23/07/14.
  */
-class URIRef(val value:URI) extends Node {
+class URIRef(val value:URI) extends RdfTerm {
   override def n3: String = s"<${value.toString}>"
 }
 

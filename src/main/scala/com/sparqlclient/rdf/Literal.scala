@@ -5,7 +5,7 @@ import java.net.URI
 /**
  * Created by basca on 23/07/14.
  */
-class Literal(val value: String, val language: Option[String] = None, val dataType: Option[URI] = None) extends Node {
+class Literal(val value: String, val language: Option[String] = None, val dataType: Option[URI] = None) extends RdfTerm {
   override def n3: String = {
     val quotedValue: String = s""""$value""""
     language match {
