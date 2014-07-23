@@ -3,6 +3,9 @@ package com.sparqlclient
 import java.net.URL
 import java.nio.charset.{StandardCharsets, Charset}
 
+import com.sparqlclient.rdf.Node
+import com.sparqlclient.convert
+
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
@@ -212,6 +215,13 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
 
   def waitForResults(duration: Int = 10): String = {
     Await.result[String](fetchResponseAsString, Duration(duration, "seconds"))
+  }
+
+  def query: Iterator[Seq[Node]] = {
+    returnFormat match {
+      case DataFormat.JSON | DataFormat.JSONLD => convert.json(waitForResults(10))
+      case _ => Iterator.empty
+    }
   }
 
   def shutdown() = {

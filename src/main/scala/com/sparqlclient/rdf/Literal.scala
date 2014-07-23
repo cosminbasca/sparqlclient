@@ -7,7 +7,7 @@ import java.net.URI
  */
 class Literal(val value: String, val language: Option[String] = None, val dataType: Option[URI] = None) extends Node {
   override def n3: String = {
-    val quotedValue:String = s""""$value""""
+    val quotedValue: String = s""""$value""""
     language match {
       case Some(lang) => s"$quotedValue@$lang"
       case None => dataType match {
@@ -15,5 +15,19 @@ class Literal(val value: String, val language: Option[String] = None, val dataTy
         case None => s"$quotedValue"
       }
     }
+  }
+}
+
+object Literal {
+  def apply(value: String): Literal = {
+    new Literal(value, None, None)
+  }
+
+  def apply(value: String, language: String): Literal = {
+    new Literal(value, Some(language), None)
+  }
+
+  def apply(value: String, dataType: URI): Literal = {
+    new Literal(value, None, Some(dataType))
   }
 }

@@ -19,10 +19,13 @@ object BenchApp extends App {
                       """)
     dbpedia.setMethod(POST)
 
-    dbpedia.setReturnFormat(DataFormat.CSV)
+    dbpedia.setReturnFormat(DataFormat.JSON)
     println(dbpedia)
-    val str = dbpedia.waitForResults()
-    println(str)
+    for (results <- dbpedia.query) {
+      for (res <- results) {
+        println(res.n3)
+      }
+    }
     dbpedia.shutdown()
   }
 }

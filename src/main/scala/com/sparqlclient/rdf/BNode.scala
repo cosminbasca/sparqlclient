@@ -6,3 +6,9 @@ package com.sparqlclient.rdf
 class BNode(val value:String) extends Node {
   override def n3: String = s"_:$value"
 }
+
+object BNode {
+  def apply(value: String): BNode = {
+    new BNode(value)
+  }
+}
