@@ -252,6 +252,11 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
     }
   }
 
+  def apply(query: String, duration: Int = 10): Iterator[Seq[RdfTerm]] = {
+    setQuery(query)
+    queryResults(duration)
+  }
+
   def shutdown() = {
     http.shutdown()
   }

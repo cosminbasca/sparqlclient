@@ -12,24 +12,19 @@ object BenchApp extends App {
   override def main(args: Array[String]): Unit = {
 
     val dbpedia = SparqlClient("http://dbpedia.org/sparql")
-    dbpedia.setQuery( """
+    val query = """
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT ?p ?label
     WHERE { <http://dbpedia.org/resource/Asturias> ?p ?label }
-                      """)
-    println(dbpedia)
+                """
+//    println(dbpedia)
 
-//    dbpedia.setReturnFormat(DataFormat.JSON)
-//    dbpedia.setReturnFormat(DataFormat.XML)
-//    dbpedia.setReturnFormat(DataFormat.JSONLD)
-//    dbpedia.setReturnFormat(DataFormat.RDF)
-//    dbpedia.setReturnFormat(DataFormat.CSV)
-    for (results <- dbpedia.queryResults()) {
+    for (results <- dbpedia(query)) {
       println(results.toList)
     }
 
 
-//    println(dbpedia.waitForResults())
+    //    println(dbpedia.waitForResults())
 
     println("done")
     dbpedia.shutdown()
