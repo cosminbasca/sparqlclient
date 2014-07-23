@@ -18,8 +18,9 @@ object BenchApp extends App {
                       """)
     dbpedia.setMethod(POST)
 
-//    dbpedia.setReturnFormat(DataFormat.JSON)
-    dbpedia.setReturnFormat(DataFormat.XML)
+    dbpedia.setReturnFormat(DataFormat.JSON)
+//    dbpedia.setReturnFormat(DataFormat.XML)
+//    dbpedia.setReturnFormat(DataFormat.JSONLD)
 //    dbpedia.setReturnFormat(DataFormat.RDF)
 //    dbpedia.setReturnFormat(DataFormat.CSV)
     println(dbpedia)
