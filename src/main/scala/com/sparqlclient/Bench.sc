@@ -1,6 +1,6 @@
 import com.sparqlclient.SparqlClient
 
-val dbpedia = SparqlClient("http://dbpedia.org/sparql")
+val dbpedia = SparqlClient("http://dbpedia.org/sparql", format = "json")
 val query = """
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT ?p ?label
