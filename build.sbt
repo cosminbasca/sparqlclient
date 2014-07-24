@@ -9,6 +9,8 @@ assemblySettings
 
 name := "sparqlclient"
 
+organization := "com.sparqlclient"
+
 version := "0.1.7"
 
 scalaVersion := "2.10.4"
