@@ -1,5 +1,4 @@
 import com.sparqlclient.SparqlClient
-
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
@@ -13,7 +12,7 @@ val query = """
 val futureResults = dbpedia(query)
 println("after submitting query! ")
 println("waiting for results....")
-println(Await.result(futureResults, Duration(10, "seconds")).toList)
+println(s"the results = \n ${Await.result(futureResults, Duration(10, "seconds")).toList}")
 //
 //for ((results, i) <- dbpedia(query, 10).zipWithIndex) {
 //  println(s"$i : ${results.toList}")

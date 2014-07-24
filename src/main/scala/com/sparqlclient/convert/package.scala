@@ -6,12 +6,26 @@ import com.sparqlclient.rdf.{Literal, BNode, URIRef, RdfTerm}
 
 import scala.io.Source
 import scala.util.parsing.json.JSON
-import scala.xml.{Node, Elem, XML, NamespaceBinding}
+import scala.xml.{Node, Elem, XML}
 
 /**
  * Created by basca on 23/07/14.
+ *
+ * The [[com.sparqlclient.convert]] package holds the builtin conversion functions.
+ *
+ * All functions in here follow the simple pattern:
+ * {{{
+ *    def conversionFunction(content: String): Iterator[Seq[RdfTerm]]
+ * }}}
  */
 package object convert {
+  /**
+   * convert the given [[http://www.w3.org/TR/sparql11-results-json/ SPARQL JSON query results]] content
+   *
+   * @param content the actual [[http://www.w3.org/TR/sparql11-results-json/ SPARQL JSON query results]] content to parse
+   * @return iterator over sequences of [[com.sparqlclient.rdf.RdfTerm]], all sequences have the same length and
+   *         is equal to the number of variables returned by the SPARQL SELECT query.
+   */
   def fromJson(content: String): Iterator[Seq[RdfTerm]] = {
     def getNode(jsonRepr: Map[String, String]): RdfTerm = {
       jsonRepr.get("type") match {
@@ -38,6 +52,13 @@ package object convert {
   }
 
 
+  /**
+   * convert the given [[http://www.w3.org/TR/rdf-sparql-XMLres/ SPARQL XML query results]] content
+   *
+   * @param content the actual [[http://www.w3.org/TR/rdf-sparql-XMLres/ SPARQL XML query results]] content to parse
+   * @return iterator over sequences of [[com.sparqlclient.rdf.RdfTerm]], all sequences have the same length and
+   *         is equal to the number of variables returned by the SPARQL SELECT query.
+   */
   def fromXML(content: String): Iterator[Seq[RdfTerm]] = {
     def getNode(binding: Node): RdfTerm = {
       (binding \ "_").headOption match {
@@ -70,6 +91,13 @@ package object convert {
   }
 
 
+  /**
+   * convert the given SPARQL RDF query results content
+   *
+   * @param content the actual SPARQL RDF query results content to parse
+   * @return iterator over sequences of [[com.sparqlclient.rdf.RdfTerm]], all sequences have the same length and
+   *         is equal to the number of variables returned by the SPARQL SELECT query.
+   */
   def fromRDF(content: String): Iterator[Seq[RdfTerm]] = {
     def getNode(binding: Node): RdfTerm = {
       (binding \ "value").headOption match {
@@ -87,7 +115,7 @@ package object convert {
           } else {
             Literal(node.text.trim)
           }
-          // TODO: bnode handling is missing here ...
+        // TODO: bnode handling is missing here ...
         case None =>
           throw new NoSuchFieldException(s"rdf-xml node: $binding cannot be parsed into an rdf term")
       }
@@ -100,6 +128,18 @@ package object convert {
   }
 
 
+  /**
+   * simple converter for the given [[http://www.w3.org/TR/sparql11-results-csv-tsv/ SPARQL CSV query results]] content
+   *
+   * note: this function cannot differentiate between different types of [[com.sparqlclient.rdf.Literal]] and will
+   * always create simple rdf literals. In addition if will heuristically try to detect URI's (starting with http: or
+   * https: ) and blank nodes (starting with _:). Everything else is converted to a plain literal. It is advisable to
+   * use other data formats (see json or xml) to get a correct and comprehensive parsing of the query results.
+   *
+   * @param content the actual [[http://www.w3.org/TR/sparql11-results-csv-tsv/ SPARQL CSV query results]] content to parse
+   * @return iterator over sequences of [[com.sparqlclient.rdf.RdfTerm]], all sequences have the same length and
+   *         is equal to the number of variables returned by the SPARQL SELECT query.
+   */
   def fromCSV(content: String): Iterator[Seq[RdfTerm]] = {
     def getNode(term: String): RdfTerm = {
       val value: String = term.replaceAll("\"", "")

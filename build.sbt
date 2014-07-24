@@ -11,7 +11,7 @@ name := "sparqlclient"
 
 organization := "com.sparqlclient"
 
-version := "0.1.7"
+version := "0.1.8"
 
 scalaVersion := "2.10.4"
 

@@ -6,8 +6,36 @@ import scala.collection.JavaConversions._
 /**
  * Created by basca on 21/07/14.
  */
+
+/**
+ * the [[com.sparqlclient]] package holds a number of constants defined such as the data formats to be used,
+ * or helpful mime-types that the SPARQL protocol regularly makes use of.
+ *
+ * This is largely a port from the excellent python [[https://github.com/RDFLib/sparqlwrapper SPARQLWrapper]] library to scala
+ *
+ * A simple example:
+ * {{{
+ *   import com.sparqlclient.SparqlClient
+ *   import scala.concurrent.Await
+ *   import scala.concurrent.duration.Duration
+ *
+ *   val dbpedia = SparqlClient("http://dbpedia.org/sparql", format = "json")
+ *   val query = """
+ *      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+ *      SELECT ?p ?label
+ *      WHERE { <http://dbpedia.org/resource/Asturias> ?p ?label }
+ *      """
+ *   val futureResults = dbpedia(query)
+ *
+ *   println(s"the results = \n ${Await.result(futureResults, Duration(10, "seconds")).toList}")
+ * }}}
+ *
+ */
 package object sparqlclient {
 
+  /**
+   * Enumeration of supported ''DataFormats'' (human readable).
+   */
   object DataFormat extends Enumeration {
     type DataFormat = String
     val JSON = "json"
@@ -22,6 +50,9 @@ package object sparqlclient {
   val ALLOWED_DATA_FORMATS: Array[String] = Array(DataFormat.JSON, DataFormat.XML, DataFormat.TURTLE, DataFormat.N3,
     DataFormat.RDF, DataFormat.CSV)
 
+  /**
+   * Enumeration of [[http://www.w3.org/TR/rdf-sparql-query/ SPARQL]] Query types
+   */
   object QueryType extends Enumeration {
     type QueryType = String
     val SELECT = "SELECT"
@@ -54,6 +85,9 @@ package object sparqlclient {
 
   val ALLOWED_REQUESTS_METHODS: Array[String] = Array(RequestMethod.URLENCODED, RequestMethod.POSTDIRECTLY)
 
+  /**
+   * Enumeration of useful mime-types for the [[http://www.w3.org/TR/sparql11-protocol/ SPARQL protocol]]
+   */
   object MimeType extends Enumeration {
     type MimeType = String
     val ANY = "*/*"
@@ -101,9 +135,16 @@ package object sparqlclient {
 
   val AGENT: String = s"SparqlClient scala sparql client v${BuildInfo.version}"
 
-  val GET: String = "GET"
-  val POST: String = "POST"
-  val ALLOWED_REQUESTS: Array[String] = Array(GET, POST)
+  /**
+   * Enumeration of [[http://www.w3.org/TR/sparql11-protocol/ SPARQL protocol]] accepted HTTP methods
+   */
+  object HttpMethod extends Enumeration {
+    type HttpMethod = String
+    val GET = "GET"
+    val POST = "POST"
+  }
+  
+  val ALLOWED_HTTP_METHODS: Array[String] = Array(HttpMethod.GET, HttpMethod.POST)
 
   val DEFAULT_SPARQL = """SELECT * WHERE{ ?s ?p ?o }"""
 
