@@ -457,8 +457,8 @@ object SparqlClient {
    * @param update the update endpoint location (by default it is None and it therefore uses the query endpoint location)
    * @param format the desired returned data format (by default [[DataFormat.XML]] due to its wide support)
    * @param defaultGraph the default data graph (by default None)
-   * @param httpMethod the http method used (by default [[HttpMethod.POST]]
-   * @param requestMethod the request method used (by default [[RequestMethod.POSTDIRECTLY]]
+   * @param httpMethod the http method used (by default [[HttpMethod.POST]])
+   * @param requestMethod the request method used (by default [[RequestMethod.POSTDIRECTLY]])
    * @return the [[SparqlClient]] instance
    */
   def apply(endpoint: String, update: Option[String] = None, format: String = DataFormat.XML,
