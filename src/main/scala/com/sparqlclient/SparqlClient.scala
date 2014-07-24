@@ -20,8 +20,8 @@ import scala.collection.JavaConversions._
  * a [[http://www.w3.org/TR/sparql11-protocol/ SPARQL protocol]] client. By default (unless specified otherwise) the
  * http method used is [[com.sparqlclient.HttpMethod.GET]] and the request is performed using the [[com.sparqlclient.RequestMethod.URLENCODED]] method.
  *
- * @param endpoint the endpoint's location url
- * @param update the endpoints's [[http://www.w3.org/TR/sparql11-update/ SPARQL UPDATE]] url
+ * @param endpointLocation the endpoint's location url
+ * @param updateEndpointLocation the endpoints's [[http://www.w3.org/TR/sparql11-update/ SPARQL UPDATE]] url
  *               (if different from the endpoint's location)
  * @param format the desired returned data format (default is [[com.sparqlclient.DataFormat.XML]] "xml"). By default the response's
  *               __"Content-type"__ header is used to determine the appropriate data model.
@@ -32,7 +32,7 @@ import scala.collection.JavaConversions._
  * @param agent the client agent (default is [[com.sparqlclient.AGENT]])
  * @param connectionTimeout the connection timeout in seconds (default is 60 seconds)
  */
-class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format: String = DataFormat.XML,
+class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option[URL] = None, val format: String = DataFormat.XML,
                    val defaultGraph: Option[URL] = None, val agent: String = AGENT, connectionTimeout: Int = 60) {
   // -------------------------------------------------------------------------------------------------------------------
   //
@@ -44,7 +44,7 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
   private val base64encoder: sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder()
 
   private val parameters: mutable.Map[String, Seq[String]] = mutable.Map.empty[String, Seq[String]]
-  private val updateEndpoint: URL = update.getOrElse(endpoint)
+  private val updateEndpoint: URL = updateEndpointLocation.getOrElse(endpointLocation)
   private val defaultReturnFormat: String = if (ALLOWED_DATA_FORMATS.contains(format)) format else DataFormat.XML
   private var user: Option[String] = None
   private var pass: Option[String] = None
@@ -271,14 +271,14 @@ class SparqlClient(val endpoint: URL, val update: Option[URL] = None, val format
         case HttpMethod.POST =>
           requestMethod match {
             case RequestMethod.POSTDIRECTLY =>
-              url(endpoint.toString).POST.addHeader("Content-Type", MimeType.SPARQL_UPDATE).setQueryParameters(parameters.toMap).setBody(queryString)
+              url(endpointLocation.toString).POST.addHeader("Content-Type", MimeType.SPARQL_UPDATE).setQueryParameters(parameters.toMap).setBody(queryString)
             case _ =>
               appendParameter("query", queryString)
-              url(endpoint.toString).POST.setHeader("Content-Type", MimeType.URL_FORM_ENCODED).setParameters(parameters.toMap)
+              url(endpointLocation.toString).POST.setHeader("Content-Type", MimeType.URL_FORM_ENCODED).setParameters(parameters.toMap)
           }
         case HttpMethod.GET =>
           appendParameter("query", queryString)
-          url(endpoint.toString).setQueryParameters(parameters.toMap)
+          url(endpointLocation.toString).setQueryParameters(parameters.toMap)
       }
     }
 
@@ -458,7 +458,7 @@ object SparqlClient {
             httpMethod: String = HttpMethod.POST, requestMethod: String = RequestMethod.POSTDIRECTLY): SparqlClient = {
     val client = new SparqlClient(
       new URL(endpoint),
-      update = if (update.nonEmpty) Some(new URL(update.get)) else None,
+      updateEndpointLocation = if (update.nonEmpty) Some(new URL(update.get)) else None,
       format = format,
       defaultGraph = if (defaultGraph.nonEmpty) Some(new URL(defaultGraph.get)) else None
     )
