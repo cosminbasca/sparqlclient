@@ -389,9 +389,9 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
 
   /**
    * the parsed query results
-   * this method is blocking
+   * this method is blocking and preserves the original query
    *
-   * this method is equivalent to (but preserves the original set query)
+   * this method is equivalent to:
    * {{{
    *   // save the original query
    *   setQuery(query)
@@ -414,6 +414,14 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
   /**
    * the parsed query results
    * this method is non-blocking and preserves the original query
+   *
+   * this method is equivalent to:
+   * {{{
+   *   // save the original query
+   *   setQuery(query)
+   *   queryResults
+   *   // restore the original query
+   * }}}
    *
    * @param query the actual query
    * @return a [[scala.concurrent.Future]] of the [[scala.collection.Iterator]] over the parsed results or an empty iterator if the method fails
