@@ -86,49 +86,49 @@ package object sparqlclient {
    * Enumeration of useful mime-types for the [[http://www.w3.org/TR/sparql11-protocol/ SPARQL protocol]]
    */
   object MimeType extends Enumeration {
-    type MimeType = String
-    val ANY = "*/*"
-    val SPARQL_RESULTS_XML = "application/sparql-results+xml"
-    val SPARQL_RESULTS_JSON = "application/sparql-results+json"
-    val SPARQL_UPDATE = "application/sparql-update"
-    val URL_FORM_ENCODED = "application/x-www-form-urlencoded"
-    val RDF_XML = "application/rdf+xml"
-    val RDF_N3 = "text/rdf+n3"
-    val RDF_N3_APP = "application/n3"
-    val RDF_N3_TXT = "text/n3"
-    val RDF_NTRIPLES = "application/n-triples"
-    val RDF_TURTLE = "application/turtle"
-    val RDF_TURTLE_TXT = "text/turtle"
-    val JAVASCRIPT = "text/javascript"
-    val JSON = "application/json"
-    val JSON_LD_X = "application/x-json+ld"
-    val JSON_LD = "application/ld+json"
-    val CSV = "text/csv"
+    type MimeType = Value
+    val Any = Value("*/*")
+    val SparqlXmlResults = Value("application/sparql-results+xml")
+    val SparqlJsonResults = Value("application/sparql-results+json")
+    val SparqlUpdate = Value("application/sparql-update")
+    val UrlFormEncoded = Value("application/x-www-form-urlencoded")
+    val RdfXml = Value("application/rdf+xml")
+    val RdfN3 = Value("text/rdf+n3")
+    val RdfN3Application = Value("application/n3")
+    val RdfN3Text = Value("text/n3")
+    val RdfNtriples = Value("application/n-triples")
+    val RdfTurtle = Value("application/turtle")
+    val RdfTurtleText = Value("text/turtle")
+    val Javascript = Value("text/javascript")
+    val Json = Value("application/json")
+    val JsonLDx = Value("application/x-json+ld")
+    val JsonLD = Value("application/ld+json")
+    val Csv = Value("text/csv")
   }
 
-  val MimeTypesDataFormat: Map[String, DataFormat.Value] = Map(
-    MimeType.SPARQL_RESULTS_XML -> DataFormat.Xml,
-    MimeType.SPARQL_RESULTS_JSON -> DataFormat.Json,
-    MimeType.JSON -> DataFormat.Json,
-    MimeType.RDF_XML -> DataFormat.Rdf,
-    MimeType.CSV -> DataFormat.Csv,
-    MimeType.RDF_N3 -> DataFormat.N3,
-    MimeType.RDF_N3_APP -> DataFormat.N3,
-    MimeType.RDF_N3_TXT -> DataFormat.N3,
-    MimeType.RDF_TURTLE -> DataFormat.Turtle,
-    MimeType.RDF_TURTLE_TXT -> DataFormat.Turtle
+  val MimeTypesDataFormat: Map[MimeType.Value, DataFormat.Value] = Map(
+    MimeType.SparqlXmlResults -> DataFormat.Xml,
+    MimeType.SparqlJsonResults -> DataFormat.Json,
+    MimeType.Json -> DataFormat.Json,
+    MimeType.RdfXml -> DataFormat.Rdf,
+    MimeType.Csv -> DataFormat.Csv,
+    MimeType.RdfN3 -> DataFormat.N3,
+    MimeType.RdfN3Application -> DataFormat.N3,
+    MimeType.RdfN3Text -> DataFormat.N3,
+    MimeType.RdfTurtle -> DataFormat.Turtle,
+    MimeType.RdfTurtleText -> DataFormat.Turtle
   )
 
-  val DefaultSparqlResultFormats: Array[String] = Array(MimeType.SPARQL_RESULTS_XML, MimeType.RDF_XML, MimeType.ANY)
-  val SparqlXmlResultFormats: Array[String] = Array(MimeType.SPARQL_RESULTS_XML)
-  val SparqlJsonResultFormats: Array[String] = Array(MimeType.SPARQL_RESULTS_JSON, MimeType.JAVASCRIPT, MimeType.JSON)
-  val RdfXmlDataFormats: Array[String] = Array(MimeType.RDF_XML)
-  val RdfN3DataFormats: Array[String] = Array(MimeType.RDF_N3, MimeType.RDF_NTRIPLES, MimeType.RDF_TURTLE, MimeType.RDF_N3_APP,
-    MimeType.RDF_N3_TXT, MimeType.RDF_TURTLE_TXT)
-  val RdfJsonLDDataFormats: Array[String] = Array(MimeType.JSON_LD_X, MimeType.JSON_LD)
-  val AnyDataFormats: Array[String] = Array(MimeType.ANY)
-  val PossibleRdfDataFormats: Array[String] = RdfXmlDataFormats ++ RdfN3DataFormats
-  val PossibleSparqlResultFormats: Array[String] = SparqlXmlResultFormats ++ SparqlJsonResultFormats ++ RdfXmlDataFormats ++ RdfN3DataFormats
+  val DefaultSparqlResultFormats: Array[MimeType.Value] = Array(MimeType.SparqlXmlResults, MimeType.RdfXml, MimeType.Any)
+  val SparqlXmlResultFormats: Array[MimeType.Value] = Array(MimeType.SparqlXmlResults)
+  val SparqlJsonResultFormats: Array[MimeType.Value] = Array(MimeType.SparqlJsonResults, MimeType.Javascript, MimeType.Json)
+  val RdfXmlDataFormats: Array[MimeType.Value] = Array(MimeType.RdfXml)
+  val RdfN3DataFormats: Array[MimeType.Value] = Array(MimeType.RdfN3, MimeType.RdfNtriples, MimeType.RdfTurtle, MimeType.RdfN3Application,
+    MimeType.RdfN3Text, MimeType.RdfTurtleText)
+  val RdfJsonLDDataFormats: Array[MimeType.Value] = Array(MimeType.JsonLDx, MimeType.JsonLD)
+  val AnyDataFormats: Array[MimeType.Value] = Array(MimeType.Any)
+  val PossibleRdfDataFormats: Array[MimeType.Value] = RdfXmlDataFormats ++ RdfN3DataFormats
+  val PossibleSparqlResultFormats: Array[MimeType.Value] = SparqlXmlResultFormats ++ SparqlJsonResultFormats ++ RdfXmlDataFormats ++ RdfN3DataFormats
 
   val Agent: String = s"SparqlClient scala sparql client v${BuildInfo.version}"
 

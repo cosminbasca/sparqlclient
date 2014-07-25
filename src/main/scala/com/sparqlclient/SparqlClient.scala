@@ -187,7 +187,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
       try {
         Some(QueryType.withName(strType))
       } catch {
-        case e:Exception => None
+        case e:NoSuchElementException => None
       }
     }
 
@@ -240,7 +240,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
           case _ => AnyDataFormats.mkString(",")
         }
       case QueryType.Insert | QueryType.Delete =>
-        MimeType.ANY
+        MimeType.Any.toString
       case _ =>
         returnFormat match {
           case DataFormat.N3 | DataFormat.Turtle => RdfN3DataFormats.mkString(",")
@@ -267,24 +267,35 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
       }
       requestMethod match {
         case RequestMethod.POSTDIRECTLY =>
-          url(updateEndpoint.toString).POST.addHeader("Content-Type", MimeType.SPARQL_UPDATE).setQueryParameters(parameters.toMap).setBody(queryString)
+          url(updateEndpoint.toString).POST.
+            addHeader("Content-Type", MimeType.SparqlUpdate.toString).
+            setQueryParameters(parameters.toMap).
+            setBody(queryString)
         case _ =>
           appendParameter("update", queryString)
-          url(updateEndpoint.toString).POST.setHeader("Content-Type", MimeType.URL_FORM_ENCODED).setParameters(parameters.toMap)
+          url(updateEndpoint.toString).POST.
+            setHeader("Content-Type", MimeType.UrlFormEncoded.toString).
+            setParameters(parameters.toMap)
       }
     } else {
       httpMethod match {
         case HttpMethod.POST =>
           requestMethod match {
             case RequestMethod.POSTDIRECTLY =>
-              url(endpointLocation.toString).POST.addHeader("Content-Type", MimeType.SPARQL_UPDATE).setQueryParameters(parameters.toMap).setBody(queryString)
+              url(endpointLocation.toString).POST.
+                addHeader("Content-Type", MimeType.SparqlUpdate.toString).
+                setQueryParameters(parameters.toMap).
+                setBody(queryString)
             case _ =>
               appendParameter("query", queryString)
-              url(endpointLocation.toString).POST.setHeader("Content-Type", MimeType.URL_FORM_ENCODED).setParameters(parameters.toMap)
+              url(endpointLocation.toString).POST.
+                setHeader("Content-Type", MimeType.UrlFormEncoded.toString).
+                setParameters(parameters.toMap)
           }
         case HttpMethod.GET =>
           appendParameter("query", queryString)
-          url(endpointLocation.toString).setQueryParameters(parameters.toMap)
+          url(endpointLocation.toString).
+            setQueryParameters(parameters.toMap)
       }
     }
 
@@ -332,9 +343,17 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * @return the correctly identified data format (will be one of [[com.sparqlclient.DataFormat]])
    */
   private def detectDataFormat(contentTypes: Seq[String]): DataFormat.Value = {
+    def getContentMimeType(strMimeType: String): Option[MimeType.Value] = {
+      try {
+        Some(MimeType.withName(strMimeType))
+      } catch {
+        case e: NoSuchElementException => None
+      }
+    }
+
     if (contentTypes.nonEmpty) {
       for (contentType <- contentTypes) {
-        MimeTypesDataFormat.get(contentType.split(";").head.trim) match {
+        MimeTypesDataFormat.get(getContentMimeType(contentType.split(";").head.trim)) match {
           case Some(dataFormat) =>
             return dataFormat
           case None =>
