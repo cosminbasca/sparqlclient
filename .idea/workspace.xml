@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="1aca25a6-8899-4856-83f8-a559fa481f91" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/sparqlclient/Bench.sc" afterPath="$PROJECT_DIR$/src/main/scala/com/sparqlclient/Bench.sc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/sparqlclient/package.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/sparqlclient/package.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/sparqlclient/convert/package.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/sparqlclient/convert/package.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/sparqlclient/SparqlClient.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/sparqlclient/SparqlClient.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="sparqlclient.iws" />
@@ -71,8 +69,8 @@
       <file leaf-file-name="SparqlClient.scala" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/sparqlclient/SparqlClient.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5423729" vertical-offset="3850" max-vertical-offset="8982">
-              <caret line="265" column="91" selection-start-line="265" selection-start-column="17" selection-end-line="265" selection-end-column="17" />
+            <state vertical-scroll-proportion="2.1232665" vertical-offset="5236" max-vertical-offset="9000">
+              <caret line="456" column="28" selection-start-line="456" selection-start-column="28" selection-end-line="456" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -112,9 +110,9 @@
         <option value="$PROJECT_DIR$/src/test/scala/TestDbpedia.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/sparqlclient/HttpException.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/sparqlclient/Bench.sc" />
-        <option value="$PROJECT_DIR$/src/main/scala/com/sparqlclient/SparqlClient.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/sparqlclient/package.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/sparqlclient/convert/package.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/com/sparqlclient/SparqlClient.scala" />
       </list>
     </option>
   </component>
@@ -1009,7 +1007,11 @@
       <created>1406298754102</created>
       <updated>1406298754102</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="version 0.2.1&#10;&#10;- HttpException is in">
+      <created>1406299299117</created>
+      <updated>1406299299117</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1471,8 +1473,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/sparqlclient/SparqlClient.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5423729" vertical-offset="3850" max-vertical-offset="8982">
-          <caret line="265" column="91" selection-start-line="265" selection-start-column="17" selection-end-line="265" selection-end-column="17" />
+        <state vertical-scroll-proportion="2.1232665" vertical-offset="5236" max-vertical-offset="9000">
+          <caret line="456" column="28" selection-start-line="456" selection-start-column="28" selection-end-line="456" selection-end-column="28" />
           <folding />
         </state>
       </provider>

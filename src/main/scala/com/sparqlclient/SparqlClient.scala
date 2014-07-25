@@ -305,31 +305,6 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
 
 
   /**
-   * the raw results (string representation as returned from the request)
-   * this method blocks
-   *
-   * note: this method filters erroneous responses silently
-   *
-   * @param duration the duration (in seconds) to wait for a response
-   * @return the raw results
-   */
-  def rawResults(duration: Int): String = {
-    Await.result[String](rawResults, Duration(duration, "seconds"))
-  }
-
-  /**
-   * the raw results (string representation as returned from the request)
-   * this method is non-blocking
-   *
-   * note: this method filters erroneous responses silently
-   *
-   * @return a [[scala.concurrent.Future]] of the raw results
-   */
-  def rawResults: Future[String] = {
-    http(createRequest OK as.String)
-  }
-
-  /**
    * auto-detection of the correct returned data format.
    *
    * note: this method may fail if the [[SparqlClient.returnFormat]] does not match the actual returned data format and
@@ -459,6 +434,32 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
     val futureResults: Future[Either[HttpException, Iterator[Seq[RdfTerm]]]] = queryResults
     setQuery(originalQuery)
     futureResults
+  }
+
+
+  /**
+   * the raw results (string representation as returned from the request)
+   * this method blocks
+   *
+   * note: this method fails silently
+   *
+   * @param duration the duration (in seconds) to wait for a response
+   * @return the raw results
+   */
+  def rawResults(duration: Int): String = {
+    Await.result[String](rawResults, Duration(duration, "seconds"))
+  }
+
+  /**
+   * the raw results (string representation as returned from the request)
+   * this method is non-blocking
+   *
+   * note: this method fails silently
+   *
+   * @return a [[scala.concurrent.Future]] of the raw results
+   */
+  def rawResults: Future[String] = {
+    http(createRequest OK as.String)
   }
 
   /**
