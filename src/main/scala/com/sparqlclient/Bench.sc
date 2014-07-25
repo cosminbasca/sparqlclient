@@ -1,7 +1,6 @@
 import com.sparqlclient.{SparqlClient, DataFormat}
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
-
 val dbpedia = SparqlClient("http://dbpedia.org/sparql", format = DataFormat.Json)
 val query = """
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

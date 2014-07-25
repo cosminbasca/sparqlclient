@@ -149,10 +149,10 @@ package object sparqlclient {
    * Enumeration of useful Namespaces
    */
   object Namespaces extends Enumeration {
-    type Namespaces = String
-    val XML = "http://www.w3.org/XML/1998/namespace"
-    val RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    val SPARQLResults = "http://www.w3.org/2005/sparql-results#"
+    type Namespaces = Value
+    val Xml = Value("http://www.w3.org/XML/1998/namespace")
+    val Rdf = Value("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+    val SparqlResults = Value("http://www.w3.org/2005/sparql-results#")
   }
 
 }
