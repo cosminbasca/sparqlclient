@@ -9,8 +9,12 @@ val query = """
     WHERE { <http://dbpedia.org/resource/Asturias> ?p ?label }
     LIMIT 3
             """
-println(dbpedia)
-val futureResults = dbpedia(query)
-println(s"the results = \n ${Await.result(futureResults, Duration(10, "seconds")).toList}")
+//println(dbpedia)
+//val futureResults = dbpedia(query)
+//println(s"the results = \n ${Await.result(futureResults, Duration(10, "seconds")).toList}")
+dbpedia.setQuery(query)
+println(s"dbpedia state \n${dbpedia.toString}")
+val results = dbpedia.queryResults(10)
+println(s"have results ${results.toList}")
 println("done")
 dbpedia.shutdown()
