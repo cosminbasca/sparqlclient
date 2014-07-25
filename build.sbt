@@ -11,7 +11,7 @@ name := "sparqlclient"
 
 organization := "com.sparqlclient"
 
-version := "0.1.8"
+version := "0.1.9"
 
 scalaVersion := "2.10.4"
 
@@ -57,5 +57,3 @@ libraryDependencies ++= Seq()
 libraryDependencies += ("org.scalatest" %% "scalatest" % "2.1.7" % "test")
 
 libraryDependencies += ("net.databinder.dispatch" %% "dispatch-core" % "0.11.1")
-
-//libraryDependencies += ("org.scala-saddle" %% "saddle-core" % "1.3.+")

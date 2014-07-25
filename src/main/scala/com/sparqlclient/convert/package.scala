@@ -67,7 +67,7 @@ package object convert {
           case "bnode" => BNode(node.text.trim)
           case "literal" =>
             val dataType: Option[Seq[Node]] = node.attribute("datatype")
-            val language: Option[Seq[Node]] = node.attribute(XML_NS, "lang")
+            val language: Option[Seq[Node]] = node.attribute(Namespaces.XML, "lang")
             if (language.nonEmpty) {
               Literal(node.text.trim, language.get.head.text)
             } else if (dataType.nonEmpty) {
@@ -103,8 +103,8 @@ package object convert {
       (binding \ "value").headOption match {
         case Some(node) =>
           val dataType: Option[Seq[Node]] = node.attribute("datatype")
-          val language: Option[Seq[Node]] = node.attribute(XML_NS, "lang")
-          val uri: Option[Seq[Node]] = node.attribute(RDF_NS, "resource")
+          val language: Option[Seq[Node]] = node.attribute(Namespaces.XML, "lang")
+          val uri: Option[Seq[Node]] = node.attribute(Namespaces.RDF, "resource")
 
           if (uri.nonEmpty) {
             URIRef(uri.get.head.text)

@@ -22,37 +22,37 @@ import scala.collection.JavaConversions._
  *
  * @param endpointLocation the endpoint's location url
  * @param updateEndpointLocation the endpoints's [[http://www.w3.org/TR/sparql11-update/ SPARQL UPDATE]] url
- *               (if different from the endpoint's location)
- * @param format the desired returned data format (default is [[com.sparqlclient.DataFormat.XML]] "xml"). By default the response's
+ *                               (if different from the endpoint's location)
+ * @param format the desired returned data format (default is [[com.sparqlclient.DataFormat.Xml]] "xml"). By default the response's
  *               __"Content-type"__ header is used to determine the appropriate data model.
  *               If the server does not provide this header, the data model falls back to this value.
- *               Must be one of [[com.sparqlclient.ALLOWED_DATA_FORMATS]]
+ *               Must be one of [[com.sparqlclient.AllowedDataFormats]]
  * @param defaultGraph the default graph to query against (default not specified,
  *                     the query is executed against the entire graph)
- * @param agent the client agent (default is [[com.sparqlclient.AGENT]])
+ * @param agent the client agent (default is [[com.sparqlclient.Agent]])
  * @param connectionTimeout the connection timeout in seconds (default is 60 seconds)
  */
-class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option[URL] = None, val format: String = DataFormat.XML,
-                   val defaultGraph: Option[URL] = None, val agent: String = AGENT, connectionTimeout: Int = 60) {
+class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option[URL] = None, val format: DataFormat.Value = DataFormat.Xml,
+                   val defaultGraph: Option[URL] = None, val agent: String = Agent, connectionTimeout: Int = 60) {
   // -------------------------------------------------------------------------------------------------------------------
   //
   // internal state
   //
   // -------------------------------------------------------------------------------------------------------------------
   private val pattern: Regex = """(?i)((\s*BASE\s*<.*?>)\s*|(\s*PREFIX\s+.+:\s*<.*?>)\s*)*(CONSTRUCT|SELECT|ASK|DESCRIBE|INSERT|DELETE|CREATE|CLEAR|DROP|LOAD|COPY|MOVE|ADD)""".r
-  private val GROUP_QUERY_TYPE: Int = 4
+  private val GroupQueryType: Int = 4
   private val base64encoder: sun.misc.BASE64Encoder = new sun.misc.BASE64Encoder()
 
   private val parameters: mutable.Map[String, Seq[String]] = mutable.Map.empty[String, Seq[String]]
   private val updateEndpoint: URL = updateEndpointLocation.getOrElse(endpointLocation)
-  private val defaultReturnFormat: String = if (ALLOWED_DATA_FORMATS.contains(format)) format else DataFormat.XML
+  private val defaultReturnFormat: DataFormat.Value = if (AllowedDataFormats.contains(format)) format else DataFormat.Xml
   private var user: Option[String] = None
   private var pass: Option[String] = None
-  private var returnFormat: String = defaultReturnFormat
-  private var queryType: String = QueryType.SELECT
-  private var queryString: String = DEFAULT_SPARQL
-  private var httpMethod: String = HttpMethod.GET
-  private var requestMethod: String = RequestMethod.URLENCODED
+  private var returnFormat: DataFormat.Value = defaultReturnFormat
+  private var queryType: QueryType.Value = QueryType.Select
+  private var queryString: String = DefaultSparqlQuery
+  private var httpMethod: HttpMethod.Value = HttpMethod.GET
+  private var requestMethod: RequestMethod.Value = RequestMethod.URLENCODED
   private val http: Http = Http.configure(_.setAllowPoolingConnection(true).setConnectionTimeoutInMs(connectionTimeout / 1000))
 
   // reset internal state on initialisation
@@ -69,18 +69,18 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
       case None =>
     }
     returnFormat = defaultReturnFormat
-    queryType = QueryType.SELECT
+    queryType = QueryType.Select
     httpMethod = HttpMethod.GET
-    queryString = DEFAULT_SPARQL
+    queryString = DefaultSparqlQuery
     requestMethod = RequestMethod.URLENCODED
   }
 
   /**
    * set the returned data format.
-   * @param format the data format: must be one of [[com.sparqlclient.ALLOWED_DATA_FORMATS]]
+   * @param format the data format: must be one of [[com.sparqlclient.AllowedDataFormats]]
    */
-  def setReturnFormat(format: String) = {
-    if (ALLOWED_DATA_FORMATS.contains(format)) {
+  def setReturnFormat(format: DataFormat.Value) = {
+    if (AllowedDataFormats.contains(format)) {
       returnFormat = format
     }
   }
@@ -93,8 +93,8 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * and [[http://www.w3.org/TR/sparql11-protocol/#update-operation]]
    * @param method the internal request method
    */
-  def setRequestMethod(method: String) = {
-    if (ALLOWED_REQUESTS_METHODS.contains(method)) {
+  def setRequestMethod(method: RequestMethod.Value) = {
+    if (AllowedRequestMethods.contains(method)) {
       requestMethod = method
     } else {
       println(s"Invalid update method: $method")
@@ -128,7 +128,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * @return
    */
   def addParameter(name: String, value: String): Boolean = {
-    if (SPARQL_PARAMS.contains(name)) {
+    if (SparqlParameters.contains(name)) {
       false
     } else {
       appendParameter(name, value)
@@ -144,7 +144,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    *         (the method returns false also when the parameter is not found)
    */
   def clearParameter(name: String): Boolean = {
-    if (SPARQL_PARAMS.contains(name)) {
+    if (SparqlParameters.contains(name)) {
       false
     } else {
       parameters.remove(name) match {
@@ -180,18 +180,24 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * detect the type of the given [[http://www.w3.org/TR/rdf-sparql-query/ SPARQL]] query
    * @param query the textual query
    * @return the type of query, will be one of [[com.sparqlclient.QueryType]].
-   *         It defaults to [[com.sparqlclient.QueryType.SELECT]]
+   *         It defaults to [[com.sparqlclient.QueryType.Select]]
    */
-  private def parseQueryType(query: String): String = {
+  private def parseQueryType(query: String): QueryType.Value = {
+    def getQueryType(strType:String): Option[QueryType.Value] = {
+      try {
+        Some(QueryType.withName(strType))
+      } catch {
+        case e:Exception => None
+      }
+    }
+
     pattern.findFirstMatchIn(query) match {
       case Some(firstMatch) =>
-        val qType: String = firstMatch.group(GROUP_QUERY_TYPE).toUpperCase
-        if (ALLOWED_QUERY_TYPES.contains(qType)) {
-          qType
-        } else {
-          QueryType.SELECT
+        getQueryType(firstMatch.group(GroupQueryType).toUpperCase) match {
+          case Some(qType) => qType
+          case None => QueryType.Select
         }
-      case None => QueryType.SELECT
+      case None => QueryType.Select
     }
   }
 
@@ -199,8 +205,8 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * set the HTTP method to use. Must be one of [[com.sparqlclient.HttpMethod]]
    * @param method the http method
    */
-  def setHttpMethod(method: String) = {
-    if (ALLOWED_HTTP_METHODS.contains(method)) {
+  def setHttpMethod(method: HttpMethod.Value) = {
+    if (AllowedHttpMethods.contains(method)) {
       this.httpMethod = method
     }
   }
@@ -210,7 +216,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * @return true if an UPDATE operation false otherwise
    */
   private def isSparqlUpdateRequest: Boolean = {
-    INSERT_QUERY_TYPE.contains(queryType)
+    InsertQueryTypes.contains(queryType)
   }
 
   /**
@@ -227,20 +233,20 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    */
   private def getAcceptHeader: String = {
     queryType match {
-      case QueryType.SELECT | QueryType.ASK =>
+      case QueryType.Select | QueryType.Ask =>
         returnFormat match {
-          case DataFormat.XML => SPARQL_XML.mkString(",")
-          case DataFormat.JSON => SPARQL_JSON.mkString(",")
-          case _ => ALL.mkString(",")
+          case DataFormat.Xml => SparqlXmlResultFormats.mkString(",")
+          case DataFormat.Json => SparqlJsonResultFormats.mkString(",")
+          case _ => AnyDataFormats.mkString(",")
         }
-      case QueryType.INSERT | QueryType.DELETE =>
+      case QueryType.Insert | QueryType.Delete =>
         MimeType.ANY
       case _ =>
         returnFormat match {
-          case DataFormat.N3 | DataFormat.TURTLE => RDF_N3.mkString(",")
-          case DataFormat.XML => RDF_XML.mkString(",")
+          case DataFormat.N3 | DataFormat.Turtle => RdfN3DataFormats.mkString(",")
+          case DataFormat.Xml => RdfXmlDataFormats.mkString(",")
           //          case DataFormat.JSONLD => RDF_JSONLD.mkString(",")
-          case _ => ALL.mkString(",")
+          case _ => AnyDataFormats.mkString(",")
         }
     }
   }
@@ -251,8 +257,8 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    */
   private def createRequest: Req = {
     // return format as defined by various endpoints ... this is not cool, and should be standardised in the future ...
-    for (fmt <- RETURN_FORMAT_PARAMS)
-      appendParameter(fmt, returnFormat)
+    for (fmt <- ReturnFormatParameters)
+      appendParameter(fmt, returnFormat.toString)
 
     // create the request according to how it was specified
     val request: Req = if (isSparqlUpdateRequest) {
@@ -325,10 +331,10 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * @param contentTypes the request set __"Content-type"__ header value
    * @return the correctly identified data format (will be one of [[com.sparqlclient.DataFormat]])
    */
-  private def detectDataFormat(contentTypes: Seq[String]): String = {
+  private def detectDataFormat(contentTypes: Seq[String]): DataFormat.Value = {
     if (contentTypes.nonEmpty) {
       for (contentType <- contentTypes) {
-        MIME_TYPE_DATA_FORMAT.get(contentType.split(";").head.trim) match {
+        MimeTypesDataFormat.get(contentType.split(";").head.trim) match {
           case Some(dataFormat) =>
             return dataFormat
           case None =>
@@ -345,10 +351,10 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * this method is non-blocking
    *
    * currently only the following formats are supported:
-   * - [[DataFormat.JSON]], see [[com.sparqlclient.convert.fromJson]] method for further details
-   * - [[DataFormat.XML]], see [[com.sparqlclient.convert.fromXML]] method for further details
-   * - [[DataFormat.RDF]], see [[com.sparqlclient.convert.fromRDF]] method for further details
-   * - [[DataFormat.CSV]], see [[com.sparqlclient.convert.fromCSV]] method for further details
+   * - [[DataFormat.Json]], see [[com.sparqlclient.convert.fromJson]] method for further details
+   * - [[DataFormat.Xml]], see [[com.sparqlclient.convert.fromXML]] method for further details
+   * - [[DataFormat.Rdf]], see [[com.sparqlclient.convert.fromRDF]] method for further details
+   * - [[DataFormat.Csv]], see [[com.sparqlclient.convert.fromCSV]] method for further details
    *
    * @return a [[scala.concurrent.Future]] of the [[scala.collection.Iterator]] over the parsed results or an empty iterator if the method fails
    */
@@ -358,14 +364,14 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
       case response =>
         val resultsIterator = if (response.getStatusCode / 100 == 2) {
           detectDataFormat(response.getHeaders("Content-type")) match {
-            case DataFormat.JSON => convert.fromJson(response.getResponseBody)
-            case DataFormat.XML => convert.fromXML(response.getResponseBody)
-            case DataFormat.RDF => convert.fromRDF(response.getResponseBody)
-            case DataFormat.CSV => convert.fromCSV(response.getResponseBody)
-            case DataFormat.N3 | DataFormat.TURTLE | DataFormat.JSONLD =>
+            case DataFormat.Json => convert.fromJson(response.getResponseBody)
+            case DataFormat.Xml => convert.fromXML(response.getResponseBody)
+            case DataFormat.Rdf => convert.fromRDF(response.getResponseBody)
+            case DataFormat.Csv => convert.fromCSV(response.getResponseBody)
+            case DataFormat.N3 | DataFormat.Turtle | DataFormat.JsonLD =>
               throw new UnsupportedOperationException(s"parsing n3 / turtle / json-ld is not yet supported, change the returnFormat to any fo the following: ${
                 List(
-                  DataFormat.JSON, DataFormat.XML, DataFormat.RDF, DataFormat.CSV)
+                  DataFormat.Json, DataFormat.Xml, DataFormat.Rdf, DataFormat.Csv)
               }")
             case _ => Iterator.empty
           }
@@ -455,15 +461,16 @@ object SparqlClient {
    *
    * @param endpoint the query endpoint location
    * @param update the update endpoint location (by default it is None and it therefore uses the query endpoint location)
-   * @param format the desired returned data format (by default [[DataFormat.XML]] due to its wide support)
+   * @param format the desired returned data format (by default [[DataFormat.Xml]] due to its wide support)
    * @param defaultGraph the default data graph (by default None)
    * @param httpMethod the http method used (by default [[HttpMethod.POST]])
    * @param requestMethod the request method used (by default [[RequestMethod.POSTDIRECTLY]])
    * @return the [[SparqlClient]] instance
    */
-  def apply(endpoint: String, update: Option[String] = None, format: String = DataFormat.XML,
+  def apply(endpoint: String, update: Option[String] = None, format: DataFormat.Value = DataFormat.Xml,
             defaultGraph: Option[String] = None,
-            httpMethod: String = HttpMethod.POST, requestMethod: String = RequestMethod.POSTDIRECTLY): SparqlClient = {
+            httpMethod: HttpMethod.Value = HttpMethod.POST,
+            requestMethod: RequestMethod.Value = RequestMethod.POSTDIRECTLY): SparqlClient = {
     val client = new SparqlClient(
       new URL(endpoint),
       updateEndpointLocation = if (update.nonEmpty) Some(new URL(update.get)) else None,
