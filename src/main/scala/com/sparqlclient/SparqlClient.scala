@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets
 
 import com.sparqlclient.rdf.RdfTerm
 
+import scala.beans.BeanProperty
 import scala.collection.mutable
 import scala.concurrent.{Promise, Await}
 import scala.concurrent.duration.Duration
@@ -51,8 +52,10 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
   private var returnFormat: DataFormat.Value = defaultReturnFormat
   private var queryType: QueryType.Value = QueryType.Select
   private var queryString: String = DefaultSparqlQuery
-  private var httpMethod: HttpMethod.Value = HttpMethod.GET
-  private var requestMethod: RequestMethod.Value = RequestMethod.URLENCODED
+  @BeanProperty
+  var httpMethod: HttpMethod.Value = HttpMethod.GET
+  @BeanProperty
+  var requestMethod: RequestMethod.Value = RequestMethod.URLENCODED
   private val http: Http = Http.configure(_.setAllowPoolingConnection(true).setConnectionTimeoutInMs(connectionTimeout / 1000))
 
   // reset internal state on initialisation
@@ -65,7 +68,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
     parameters.clear()
     defaultGraph match {
       case Some(graph) =>
-        appendParameter("default-graph-uri", graph.toString)
+        appendParameter(parameters, "default-graph-uri", graph.toString)
       case None =>
     }
     returnFormat = defaultReturnFormat
@@ -86,29 +89,13 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
   }
 
   /**
-   * Set the internal method used to perform the request for querying or update operations,
-   * it can be either:  URL encoded [[com.sparqlclient.RequestMethod.URLENCODED]] or
-   * POST directly [[com.sparqlclient.RequestMethod.POSTDIRECTLY]]
-   * For further reading please visit [[http://www.w3.org/TR/sparql11-protocol/#query-operation]]
-   * and [[http://www.w3.org/TR/sparql11-protocol/#update-operation]]
-   * @param method the internal request method
-   */
-  def setRequestMethod(method: RequestMethod.Value) = {
-    if (AllowedRequestMethods.contains(method)) {
-      requestMethod = method
-    } else {
-      println(s"Invalid update method: $method")
-    }
-  }
-
-  /**
    * Append new parameter values. If the parameter does not exist a new Sequence of values (with the given value) is
    * created
    *
    * @param name the name of the parameter
    * @param value the value
    */
-  private def appendParameter(name: String, value: String) = {
+  private def appendParameter(parameters: mutable.Map[String, Seq[String]], name: String, value: String) = {
     val values: Seq[String] = parameters.get(name) match {
       case Some(paramValues) => paramValues ++ Seq(value)
       case None => Seq(value)
@@ -125,15 +112,25 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    *
    * @param name the name of the parameter
    * @param value the value of the parameter
-   * @return
+   * @return true if the parameter was set successfully (must be one of [[SparqlParameters]]), false otherwise
    */
   def addParameter(name: String, value: String): Boolean = {
     if (SparqlParameters.contains(name)) {
       false
     } else {
-      appendParameter(name, value)
+      appendParameter(parameters, name, value)
       true
     }
+  }
+
+  /**
+   * get the values associated with this parameter (if any)
+   *
+   * @param name the parameter name
+   * @return a sequence of values, or None if parameter is not set
+   */
+  def getParameter(name: String): Option[Seq[String]] = {
+    parameters.get(name)
   }
 
   /**
@@ -183,11 +180,11 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    *         It defaults to [[com.sparqlclient.QueryType.Select]]
    */
   private def parseQueryType(query: String): QueryType.Value = {
-    def getQueryType(strType:String): Option[QueryType.Value] = {
+    def getQueryType(strType: String): Option[QueryType.Value] = {
       try {
         Some(QueryType.withName(strType))
       } catch {
-        case e:NoSuchElementException => None
+        case e: NoSuchElementException => None
       }
     }
 
@@ -198,16 +195,6 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
           case None => QueryType.Select
         }
       case None => QueryType.Select
-    }
-  }
-
-  /**
-   * set the HTTP method to use. Must be one of [[com.sparqlclient.HttpMethod]]
-   * @param method the http method
-   */
-  def setHttpMethod(method: HttpMethod.Value) = {
-    if (AllowedHttpMethods.contains(method)) {
-      this.httpMethod = method
     }
   }
 
@@ -251,14 +238,20 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
     }
   }
 
+
   /**
    * create the request according to the guidelines of the [[http://www.w3.org/TR/sparql11-protocol/ SPARQL protocol]]
    * @return the request
+   * @throws UnsupportedOperationException if the request method for an update operation is not [[HttpMethod.POST]]
    */
   private def createRequest: Req = {
+    // request specific parameters copy
+    val requestParameters: mutable.Map[String, Seq[String]] = mutable.Map.empty[String, Seq[String]] ++ parameters
     // return format as defined by various endpoints ... this is not cool, and should be standardised in the future ...
     for (fmt <- ReturnFormatParameters)
-      appendParameter(fmt, returnFormat.toString)
+      appendParameter(requestParameters, fmt, returnFormat.toString)
+
+    println(s"REQ PARAMS = $requestParameters}")
 
     // create the request according to how it was specified
     val request: Req = if (isSparqlUpdateRequest) {
@@ -269,13 +262,13 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
         case RequestMethod.POSTDIRECTLY =>
           url(updateEndpoint.toString).POST.
             addHeader("Content-Type", MimeType.SparqlUpdate.toString).
-            setQueryParameters(parameters.toMap).
+            setQueryParameters(requestParameters.toMap).
             setBody(queryString)
         case _ =>
-          appendParameter("update", queryString)
+          appendParameter(requestParameters, "update", queryString)
           url(updateEndpoint.toString).POST.
             setHeader("Content-Type", MimeType.UrlFormEncoded.toString).
-            setParameters(parameters.toMap)
+            setParameters(requestParameters.toMap)
       }
     } else {
       httpMethod match {
@@ -283,19 +276,19 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
           requestMethod match {
             case RequestMethod.POSTDIRECTLY =>
               url(endpointLocation.toString).POST.
-                addHeader("Content-Type", MimeType.SparqlUpdate.toString).
-                setQueryParameters(parameters.toMap).
+                addHeader("Content-Type", MimeType.SparqlQuery.toString).
+                setQueryParameters(requestParameters.toMap).
                 setBody(queryString)
             case _ =>
-              appendParameter("query", queryString)
+              appendParameter(requestParameters, "query", queryString)
               url(endpointLocation.toString).POST.
                 setHeader("Content-Type", MimeType.UrlFormEncoded.toString).
-                setParameters(parameters.toMap)
+                setParameters(requestParameters.toMap)
           }
         case HttpMethod.GET =>
-          appendParameter("query", queryString)
-          url(endpointLocation.toString).
-            setQueryParameters(parameters.toMap)
+          appendParameter(requestParameters, "query", queryString)
+          url(endpointLocation.toString).GET.
+            setQueryParameters(requestParameters.toMap)
       }
     }
 
@@ -351,18 +344,13 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
       }
     }
 
-    if (contentTypes.nonEmpty) {
-      for (contentType <- contentTypes) {
-        MimeTypesDataFormat.get(getContentMimeType(contentType.split(";").head.trim)) match {
-          case Some(dataFormat) =>
-            return dataFormat
-          case None =>
-        }
-      }
-      returnFormat
-    } else {
-      returnFormat
-    }
+    val contentMimeTypes: Seq[MimeType.Value] = contentTypes.
+      map(ct => getContentMimeType(ct.split(";").head.trim)).dropWhile(_.isEmpty).map(mt => mt.get)
+
+    val dataFormats: Seq[DataFormat.Value] = contentMimeTypes.
+      map(mt => MimeTypesDataFormat.get(mt)).dropWhile(_.isEmpty).map(df => df.get)
+
+    if (dataFormats.nonEmpty) dataFormats.head else returnFormat
   }
 
   /**

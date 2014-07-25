@@ -80,8 +80,6 @@ package object sparqlclient {
     val URLENCODED, POSTDIRECTLY = Value
   }
 
-  val AllowedRequestMethods: Array[RequestMethod.Value] = Array(RequestMethod.URLENCODED, RequestMethod.POSTDIRECTLY)
-
   /**
    * Enumeration of useful mime-types for the [[http://www.w3.org/TR/sparql11-protocol/ SPARQL protocol]]
    */
@@ -91,6 +89,7 @@ package object sparqlclient {
     val SparqlXmlResults = Value("application/sparql-results+xml")
     val SparqlJsonResults = Value("application/sparql-results+json")
     val SparqlUpdate = Value("application/sparql-update")
+    val SparqlQuery = Value("application/sparql-query")
     val UrlFormEncoded = Value("application/x-www-form-urlencoded")
     val RdfXml = Value("application/rdf+xml")
     val RdfN3 = Value("text/rdf+n3")
@@ -140,8 +139,6 @@ package object sparqlclient {
     val GET = Value("GET")
     val POST = Value("POST")
   }
-
-  val AllowedHttpMethods: Array[HttpMethod.Value] = Array(HttpMethod.GET, HttpMethod.POST)
 
   val DefaultSparqlQuery: String = """SELECT * WHERE{ ?s ?p ?o } LIMIT 10"""
 
