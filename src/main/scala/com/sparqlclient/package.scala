@@ -16,20 +16,18 @@ import scala.collection.JavaConversions._
  *
  * A simple example:
  * {{{
- *   import com.sparqlclient.{SparqlClient, DataFormat}
- *   import scala.concurrent.Await
- *   import scala.concurrent.duration.Duration
+ * import com.sparqlclient.{SparqlClient, DataFormat}
  *
- *   val dbpedia = SparqlClient("http://dbpedia.org/sparql", format = DataFormat.JSON)
- *   val query = """
- *      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
- *      SELECT ?p ?label
- *      WHERE { <http://dbpedia.org/resource/Asturias> ?p ?label }
- *      LIMIT 10
+ * val dbpedia = SparqlClient("http://dbpedia.org/sparql", format = DataFormat.JSON)
+ * val query = """
+ *   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+ *   SELECT ?p ?label
+ *   WHERE { <http://dbpedia.org/resource/Asturias> ?p ?label }
+ *   LIMIT 10
  * """
- * val futureResults = dbpedia(query)
+ * val results = dbpedia(query, 10)
  *
- * println(s"the results = \n ${Await.result(futureResults, Duration(10, "seconds")).toList}")
+ * println(s"the results = \n ${results.toList}")
  * }}}
  *
  */
