@@ -20,7 +20,7 @@ import scala.collection.JavaConversions._
 
 /**
  * a [[http://www.w3.org/TR/sparql11-protocol/ SPARQL protocol]] client. By default (unless specified otherwise) the
- * http method used is [[com.sparqlclient.HttpMethod.GET]] and the request is performed using the [[com.sparqlclient.RequestMethod.URLENCODED]] method.
+ * http method used is [[com.sparqlclient.HttpMethod.GET]] and the request is performed using the [[com.sparqlclient.RequestMethod.UrlEncoded]] method.
  *
  * @param endpointLocation the endpoint's location url
  * @param updateEndpointLocation the endpoints's [[http://www.w3.org/TR/sparql11-update/ SPARQL UPDATE]] url
@@ -56,7 +56,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
   @BeanProperty
   var httpMethod: HttpMethod.Value = HttpMethod.GET
   @BeanProperty
-  var requestMethod: RequestMethod.Value = RequestMethod.URLENCODED
+  var requestMethod: RequestMethod.Value = RequestMethod.UrlEncoded
   private val http: Http = Http.configure(_.setAllowPoolingConnection(true).setConnectionTimeoutInMs(connectionTimeout / 1000))
 
   // reset internal state on initialisation
@@ -76,7 +76,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
     queryType = QueryType.Select
     httpMethod = HttpMethod.GET
     queryString = DefaultSparqlQuery
-    requestMethod = RequestMethod.URLENCODED
+    requestMethod = RequestMethod.UrlEncoded
   }
 
   /**
@@ -96,12 +96,12 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * @param name the name of the parameter
    * @param value the value
    */
-  private def appendParameter(parameters: mutable.Map[String, Seq[String]], name: String, value: String) = {
-    val values: Seq[String] = parameters.get(name) match {
+  private def appendParameter(requestParameters: mutable.Map[String, Seq[String]], name: String, value: String) = {
+    val values: Seq[String] = requestParameters.get(name) match {
       case Some(paramValues) => paramValues ++ Seq(value)
       case None => Seq(value)
     }
-    parameters(name) = values
+    requestParameters(name) = values
   }
 
   /**
@@ -258,7 +258,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
         throw new UnsupportedOperationException("update operations MUST be done by POST")
       }
       requestMethod match {
-        case RequestMethod.POSTDIRECTLY =>
+        case RequestMethod.PostDirectly =>
           url(updateEndpoint.toString).POST.
             addHeader("Content-Type", MimeType.SparqlUpdate.toString).
             setQueryParameters(requestParameters.toMap).
@@ -273,7 +273,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
       httpMethod match {
         case HttpMethod.POST =>
           requestMethod match {
-            case RequestMethod.POSTDIRECTLY =>
+            case RequestMethod.PostDirectly =>
               url(endpointLocation.toString).POST.
                 addHeader("Content-Type", MimeType.SparqlQuery.toString).
                 setQueryParameters(requestParameters.toMap).
@@ -486,13 +486,13 @@ object SparqlClient {
    * @param format the desired returned data format (by default [[DataFormat.Xml]] due to its wide support)
    * @param defaultGraph the default data graph (by default None)
    * @param httpMethod the http method used (by default [[HttpMethod.POST]])
-   * @param requestMethod the request method used (by default [[RequestMethod.POSTDIRECTLY]])
+   * @param requestMethod the request method used (by default [[RequestMethod.UrlEncoded]])
    * @return the [[SparqlClient]] instance
    */
   def apply(endpoint: String, update: Option[String] = None, format: DataFormat.Value = DataFormat.Xml,
             defaultGraph: Option[String] = None,
             httpMethod: HttpMethod.Value = HttpMethod.POST,
-            requestMethod: RequestMethod.Value = RequestMethod.POSTDIRECTLY): SparqlClient = {
+            requestMethod: RequestMethod.Value = RequestMethod.UrlEncoded): SparqlClient = {
     val client = new SparqlClient(
       new URL(endpoint),
       updateEndpointLocation = if (update.nonEmpty) Some(new URL(update.get)) else None,

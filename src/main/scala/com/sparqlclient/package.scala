@@ -77,7 +77,7 @@ package object sparqlclient {
 
   object RequestMethod extends Enumeration {
     type RequestMethod = Value
-    val URLENCODED, POSTDIRECTLY = Value
+    val UrlEncoded, PostDirectly = Value
   }
 
   /**
