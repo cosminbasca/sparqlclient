@@ -12,7 +12,7 @@ val query = """
 try {
 //  val results = dbpedia.queryResults(10)
   val results = dbpedia(query, 10)
-  println(s"have results ${results.toList}")
+  println(s"header = ${results._1}\n data = ${results._2.toList}")
 } catch {
   case e: HttpException => println(s"ERROR = $e")
 } finally {

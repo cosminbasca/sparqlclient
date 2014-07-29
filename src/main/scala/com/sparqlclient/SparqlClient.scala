@@ -344,11 +344,11 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * @return a [[scala.concurrent.Future]] of the [[scala.collection.Iterator]] over the parsed results
    *         or a [[HttpException]] if the method fails, wrapped in an [[Either]]
    */
-  def queryResults: Future[Either[HttpException, Iterator[Seq[RdfTerm]]]] = {
-    val results: Promise[Either[HttpException, Iterator[Seq[RdfTerm]]]] = Promise[Either[HttpException, Iterator[Seq[RdfTerm]]]]()
+  def queryResults: Future[Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])]] = {
+    val results: Promise[Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])]] = Promise[Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])]]()
     http(createRequest) onComplete {
       case Success(response) =>
-        val resultsIterator:Either[HttpException, Iterator[Seq[RdfTerm]]] = if (response.getStatusCode / 100 == 2) {
+        val resultsIterator:Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])] = if (response.getStatusCode / 100 == 2) {
           val results = detectDataFormat(response.getHeaders("Content-type")) match {
             case DataFormat.Json => convert.fromJson(response.getResponseBody)
             case DataFormat.Xml => convert.fromXML(response.getResponseBody)
@@ -359,7 +359,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
                 List(
                   DataFormat.Json, DataFormat.Xml, DataFormat.Rdf, DataFormat.Csv)
               }")
-            case _ => Iterator.empty
+            case _ => (Seq.empty, Iterator.empty)
           }
           Right(results)
         } else {
@@ -381,8 +381,8 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * @return an [[scala.collection.Iterator]] over the parsed results or an empty iterator if the method fails
    * @throws the corresponding [[HttpException]] if the request did not complete properly
    */
-  def queryResults(duration: Int): Iterator[Seq[RdfTerm]] = {
-    Await.result[Either[HttpException, Iterator[Seq[RdfTerm]]]](queryResults, Duration(duration, "seconds")) match {
+  def queryResults(duration: Int): (Seq[String], Iterator[Seq[RdfTerm]]) = {
+    Await.result[Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])]](queryResults, Duration(duration, "seconds")) match {
       case Right(results) => results
       case Left(httpException) => throw httpException
     }
@@ -404,10 +404,10 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * @param duration the blocking duration
    * @return an [[scala.collection.Iterator]] over the parsed results or an empty iterator if the method fails
    */
-  def apply(query: String, duration: Int): Iterator[Seq[RdfTerm]] = {
+  def apply(query: String, duration: Int): (Seq[String], Iterator[Seq[RdfTerm]]) = {
     val originalQuery: String = queryString
     setQuery(query)
-    val results: Iterator[Seq[RdfTerm]] = queryResults(duration)
+    val results: (Seq[String], Iterator[Seq[RdfTerm]]) = queryResults(duration)
     setQuery(originalQuery)
     results
   }
@@ -428,10 +428,10 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
    * @return a [[scala.concurrent.Future]] of the [[scala.collection.Iterator]] over the parsed results
    *         or a [[HttpException]] if the method fails, wrapped in an [[Either]]
    */
-  def apply(query: String): Future[Either[HttpException, Iterator[Seq[RdfTerm]]]] = {
+  def apply(query: String): Future[Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])]] = {
     val originalQuery: String = queryString
     setQuery(query)
-    val futureResults: Future[Either[HttpException, Iterator[Seq[RdfTerm]]]] = queryResults
+    val futureResults: Future[Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])]] = queryResults
     setQuery(originalQuery)
     futureResults
   }

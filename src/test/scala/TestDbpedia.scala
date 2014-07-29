@@ -19,7 +19,7 @@ class TestDbpedia extends FlatSpec with BeforeAndAfter {
     WHERE { <http://dbpedia.org/resource/Asturias> ?p ?label }
     LIMIT $maxResults
                 """
-    val results:Seq[Seq[RdfTerm]] = dbpedia(query, 10).toSeq
+    val results:Seq[Seq[RdfTerm]] = dbpedia(query, 10)._2.toSeq
     assert(results.length == maxResults, "the number of results differs")
 
     dbpedia.shutdown()

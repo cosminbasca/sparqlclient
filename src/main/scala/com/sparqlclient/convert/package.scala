@@ -26,7 +26,7 @@ package object convert {
    * @return iterator over sequences of [[com.sparqlclient.rdf.RdfTerm]], all sequences have the same length and
    *         is equal to the number of variables returned by the SPARQL SELECT query.
    */
-  def fromJson(content: String): Iterator[Seq[RdfTerm]] = {
+  def fromJson(content: String): (Seq[String], Iterator[Seq[RdfTerm]]) = {
     def getNode(jsonRepr: Map[String, String]): RdfTerm = {
       jsonRepr.get("type") match {
         case Some("uri") => URIRef(jsonRepr("value"))
@@ -39,15 +39,16 @@ package object convert {
     }
 
     JSON.parseFull(content) match {
-      case None => Iterator.empty
+      case None => (Seq.empty, Iterator.empty)
       case Some(json) =>
         val sparqlJsonResults: Map[String, Any] = json.asInstanceOf[Map[String, Any]]
         val header: Map[String, List[String]] = sparqlJsonResults("head").asInstanceOf[Map[String, List[String]]]
         val results: Map[String, List[Map[String, Map[String, String]]]] =
           sparqlJsonResults("results").asInstanceOf[Map[String, List[Map[String, Map[String, String]]]]]
-        for (binding <- results("bindings").iterator) yield
+        val resultsIterator:Iterator[Seq[RdfTerm]] = for (binding <- results("bindings").iterator) yield
           for (column <- header("vars")) yield
             getNode(binding(column))
+        (header("vars"), resultsIterator)
     }
   }
 
@@ -59,7 +60,7 @@ package object convert {
    * @return iterator over sequences of [[com.sparqlclient.rdf.RdfTerm]], all sequences have the same length and
    *         is equal to the number of variables returned by the SPARQL SELECT query.
    */
-  def fromXML(content: String): Iterator[Seq[RdfTerm]] = {
+  def fromXML(content: String): (Seq[String], Iterator[Seq[RdfTerm]]) = {
     def getNode(binding: Node): RdfTerm = {
       (binding \ "_").headOption match {
         case Some(node) => node.label match {
@@ -85,9 +86,10 @@ package object convert {
 
     val sparql: Elem = XML.loadString(content)
     val header: Seq[String] = for (variable <- sparql \ "head") yield (variable \ "@name").text
-    for (result <- (sparql \ "results" \ "result").iterator) yield
+    val resultsIterator:Iterator[Seq[RdfTerm]] = for (result <- (sparql \ "results" \ "result").iterator) yield
       for (binding <- result \ "binding") yield
         getNode(binding)
+    (header, resultsIterator)
   }
 
 
@@ -98,7 +100,7 @@ package object convert {
    * @return iterator over sequences of [[com.sparqlclient.rdf.RdfTerm]], all sequences have the same length and
    *         is equal to the number of variables returned by the SPARQL SELECT query.
    */
-  def fromRDF(content: String): Iterator[Seq[RdfTerm]] = {
+  def fromRDF(content: String): (Seq[String], Iterator[Seq[RdfTerm]]) = {
     def getNode(binding: Node): RdfTerm = {
       (binding \ "value").headOption match {
         case Some(node) =>
@@ -122,9 +124,11 @@ package object convert {
     }
 
     val rdf: Elem = XML.loadString(content)
-    for (result <- (rdf \ "Description" \ "solution").iterator) yield
+    val header: Seq[String] = Seq.empty
+    val resultsIterator:Iterator[Seq[RdfTerm]] = for (result <- (rdf \ "Description" \ "solution").iterator) yield
       for (binding <- result \ "binding") yield
         getNode(binding)
+    (header, resultsIterator)
   }
 
 
@@ -140,7 +144,7 @@ package object convert {
    * @return iterator over sequences of [[com.sparqlclient.rdf.RdfTerm]], all sequences have the same length and
    *         is equal to the number of variables returned by the SPARQL SELECT query.
    */
-  def fromCSV(content: String): Iterator[Seq[RdfTerm]] = {
+  def fromCSV(content: String): (Seq[String], Iterator[Seq[RdfTerm]]) = {
     def getNode(term: String): RdfTerm = {
       val value: String = term.replaceAll("\"", "")
       if (value.startsWith("http:") || value.startsWith("https:"))
@@ -152,9 +156,12 @@ package object convert {
     }
 
     val src: Source = Source.fromString(content)
-
-    for ((line: String, i: Int) <- src.getLines().zipWithIndex if i > 0) yield
+    val lines: Iterator[String] = src.getLines()
+    val header: Seq[String] = lines.next().split(",").toSeq
+    val resultsIterator:Iterator[Seq[RdfTerm]] = for (line <- lines) yield
       for (term <- line.split(",").toSeq) yield
         getNode(term)
+
+    (header, resultsIterator)
   }
 }
