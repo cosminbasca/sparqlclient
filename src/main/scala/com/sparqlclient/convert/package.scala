@@ -5,7 +5,6 @@ import java.net.URI
 import com.sparqlclient.rdf.{Literal, BNode, URIRef, RdfTerm}
 
 import scala.io.Source
-import scala.util.parsing.json.JSON
 import scala.xml.{Node, Elem, XML}
 
 /**
@@ -19,38 +18,38 @@ import scala.xml.{Node, Elem, XML}
  * }}}
  */
 package object convert {
-  /**
-   * convert the given [[http://www.w3.org/TR/sparql11-results-json/ SPARQL JSON query results]] content
-   *
-   * @param content the actual [[http://www.w3.org/TR/sparql11-results-json/ SPARQL JSON query results]] content to parse
-   * @return iterator over sequences of [[com.sparqlclient.rdf.RdfTerm]], all sequences have the same length and
-   *         is equal to the number of variables returned by the SPARQL SELECT query.
-   */
-  def fromJson(content: String): (Seq[String], Iterator[Seq[RdfTerm]]) = {
-    def getNode(jsonRepr: Map[String, String]): RdfTerm = {
-      jsonRepr.get("type") match {
-        case Some("uri") => URIRef(jsonRepr("value"))
-        case Some("bnode") => BNode(jsonRepr("value"))
-        case Some("literal") => new Literal(jsonRepr("value"), language = jsonRepr.get("xml:lang"))
-        case Some("typed-literal") => Literal(jsonRepr("value"), new URI(jsonRepr("datatype")))
-        case _ | None =>
-          throw new NoSuchFieldException("json response is badly formatted, field \"type\" not found")
-      }
-    }
-
-    JSON.parseFull(content) match {
-      case None => (Seq.empty, Iterator.empty)
-      case Some(json) =>
-        val sparqlJsonResults: Map[String, Any] = json.asInstanceOf[Map[String, Any]]
-        val header: Map[String, List[String]] = sparqlJsonResults("head").asInstanceOf[Map[String, List[String]]]
-        val results: Map[String, List[Map[String, Map[String, String]]]] =
-          sparqlJsonResults("results").asInstanceOf[Map[String, List[Map[String, Map[String, String]]]]]
-        val resultsIterator:Iterator[Seq[RdfTerm]] = for (binding <- results("bindings").iterator) yield
-          for (column <- header("vars")) yield
-            getNode(binding(column))
-        (header("vars"), resultsIterator)
-    }
-  }
+//  /**
+//   * convert the given [[http://www.w3.org/TR/sparql11-results-json/ SPARQL JSON query results]] content
+//   *
+//   * @param content the actual [[http://www.w3.org/TR/sparql11-results-json/ SPARQL JSON query results]] content to parse
+//   * @return iterator over sequences of [[com.sparqlclient.rdf.RdfTerm]], all sequences have the same length and
+//   *         is equal to the number of variables returned by the SPARQL SELECT query.
+//   */
+//  def fromJson(content: String): (Seq[String], Iterator[Seq[RdfTerm]]) = {
+//    def getNode(jsonRepr: Map[String, String]): RdfTerm = {
+//      jsonRepr.get("type") match {
+//        case Some("uri") => URIRef(jsonRepr("value"))
+//        case Some("bnode") => BNode(jsonRepr("value"))
+//        case Some("literal") => new Literal(jsonRepr("value"), language = jsonRepr.get("xml:lang"))
+//        case Some("typed-literal") => Literal(jsonRepr("value"), new URI(jsonRepr("datatype")))
+//        case _ | None =>
+//          throw new NoSuchFieldException("json response is badly formatted, field \"type\" not found")
+//      }
+//    }
+//
+//    JSON.parseFull(content) match {
+//      case None => (Seq.empty, Iterator.empty)
+//      case Some(json) =>
+//        val sparqlJsonResults: Map[String, Any] = json.asInstanceOf[Map[String, Any]]
+//        val header: Map[String, List[String]] = sparqlJsonResults("head").asInstanceOf[Map[String, List[String]]]
+//        val results: Map[String, List[Map[String, Map[String, String]]]] =
+//          sparqlJsonResults("results").asInstanceOf[Map[String, List[Map[String, Map[String, String]]]]]
+//        val resultsIterator:Iterator[Seq[RdfTerm]] = for (binding <- results("bindings").iterator) yield
+//          for (column <- header("vars")) yield
+//            getNode(binding(column))
+//        (header("vars"), resultsIterator)
+//    }
+//  }
 
 
   /**

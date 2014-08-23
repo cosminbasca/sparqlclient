@@ -11,9 +11,9 @@ name := "sparqlclient"
 
 organization := "com.sparqlclient"
 
-version := "0.2.2"
+version := "0.2.3"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.2"
 
 scalacOptions ++= Seq("-optimize", "-Yinline-warnings", "-feature", "-deprecation")
 

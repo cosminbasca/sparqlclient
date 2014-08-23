@@ -3,6 +3,7 @@ package com.sparqlclient
 import java.net.URL
 import java.nio.charset.StandardCharsets
 
+import com.ning.http.client.Response
 import com.sparqlclient.rdf.RdfTerm
 
 import scala.beans.BeanProperty
@@ -347,10 +348,11 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
   def queryResults: Future[Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])]] = {
     val results: Promise[Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])]] = Promise[Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])]]()
     http(createRequest) onComplete {
-      case Success(response) =>
+      case Success(response: Response) =>
         val resultsIterator:Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])] = if (response.getStatusCode / 100 == 2) {
           val results = detectDataFormat(response.getHeaders("Content-type")) match {
-            case DataFormat.Json => convert.fromJson(response.getResponseBody)
+//            case DataFormat.Json => convert.fromJson(response.getResponseBody)
+            case DataFormat.Json => throw new UnsupportedOperationException("TODO FIX JSON PARSING HERE !!!")
             case DataFormat.Xml => convert.fromXML(response.getResponseBody)
             case DataFormat.Rdf => convert.fromRDF(response.getResponseBody)
             case DataFormat.Csv => convert.fromCSV(response.getResponseBody)
