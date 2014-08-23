@@ -1,11 +1,11 @@
-[info] Updating {file:/Users/basca/Workspace/sw/sparqlclient/project/}sparqlclient-build...
-[debug] :: resolving dependencies :: default#sparqlclient-build;0.1-SNAPSHOT
+[info] Updating {file:/Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/}trunk-build...
+[debug] :: resolving dependencies :: default#trunk-build;0.1-SNAPSHOT
 [debug] 	confs: [compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool]
 [debug] 	validate = true
 [debug] 	refresh = false
 [debug] resolving dependencies for configuration 'compile'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
 [info] Resolving default#global-plugins;0.0 ...
 [debug] sbt-chain: Checking cache for: dependency: default#global-plugins;0.0 {compile=[default(compile)]}
 [debug] 	found default#global-plugins;0.0 in inter-project
@@ -15,54 +15,54 @@
 [debug] sbt-chain: module revision found in cache: org.jetbrains#sbt-structure;2.4.0
 [debug] 	typesafe-ivy-releases: revision in cache: org.jetbrains#sbt-structure;2.4.0
 [debug] 	found org.jetbrains#sbt-structure;2.4.0 in sbt-chain
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
 [info] Resolving com.eed3si9n#sbt-assembly;0.11.2 ...
 [debug] sbt-chain: Checking cache for: dependency: com.eed3si9n#sbt-assembly;0.11.2 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.eed3si9n#sbt-assembly;0.11.2
 [debug] 	typesafe-ivy-releases: revision in cache: com.eed3si9n#sbt-assembly;0.11.2
 [debug] 	found com.eed3si9n#sbt-assembly;0.11.2 in sbt-chain
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
 [info] Resolving com.eed3si9n#sbt-buildinfo;0.3.2 ...
 [debug] sbt-chain: Checking cache for: dependency: com.eed3si9n#sbt-buildinfo;0.3.2 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.eed3si9n#sbt-buildinfo;0.3.2
 [debug] 	typesafe-ivy-releases: revision in cache: com.eed3si9n#sbt-buildinfo;0.3.2
 [debug] 	found com.eed3si9n#sbt-buildinfo;0.3.2 in sbt-chain
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
 [info] Resolving com.eed3si9n#sbt-dirty-money;0.1.0 ...
 [debug] sbt-chain: Checking cache for: dependency: com.eed3si9n#sbt-dirty-money;0.1.0 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.eed3si9n#sbt-dirty-money;0.1.0
 [debug] 	typesafe-ivy-releases: revision in cache: com.eed3si9n#sbt-dirty-money;0.1.0
 [debug] 	found com.eed3si9n#sbt-dirty-money;0.1.0 in sbt-chain
 [debug] resolving dependencies for configuration 'runtime'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [runtime]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [runtime]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
 [debug] == resolving dependencies default#global-plugins;0.0->org.jetbrains#sbt-structure;2.4.0 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
 [debug] resolving dependencies for configuration 'test'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [test]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [runtime]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [test]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [runtime]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
 [debug] == resolving dependencies default#global-plugins;0.0->org.jetbrains#sbt-structure;2.4.0 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
 [debug] resolving dependencies for configuration 'provided'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [provided]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->default(compile)]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [provided]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->default(compile)]
 [info] Resolving org.scala-lang#scala-library;2.10.3 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@64fde8da
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@3e3e3c83
 [debug] sbt-chain: module revision found in cache: org.scala-lang#scala-library;2.10.3
 [debug] 	typesafe-ivy-releases: revision in cache: org.scala-lang#scala-library;2.10.3
 [debug] 	found org.scala-lang#scala-library;2.10.3 in sbt-chain
 [debug] 	[2.10.3] org.scala-lang#scala-library;2.10.3
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->runtime]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->compile]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->master]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.2 [provided->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->runtime]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->compile]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->master]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.2 [provided->default(compile)]
 [info] Resolving org.scala-sbt#sbt;0.13.2 ...
 [debug] sbt-chain: Checking cache for: dependency: org.scala-sbt#sbt;0.13.2 {provided=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: org.scala-sbt#sbt;0.13.2
@@ -596,22 +596,22 @@
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.2->org.scala-lang#scala-library;2.10.3 [compile->master]
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.2->org.scala-sbt#interface;0.13.2 [compile->default(compile)]
 [debug] resolving dependencies for configuration 'optional'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [optional]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [optional]
 [debug] resolving dependencies for configuration 'compile-internal'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [compile-internal]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [compile-internal]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
 [debug] == resolving dependencies default#global-plugins;0.0->org.jetbrains#sbt-structure;2.4.0 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [optional]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [provided]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->runtime]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->compile]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->master]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.2 [provided->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [optional]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [provided]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->runtime]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->compile]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->master]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.2 [provided->default(compile)]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.2->org.scala-lang#scala-library;2.10.3 [compile->default(compile)]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.2->org.scala-lang#scala-library;2.10.3 [compile->runtime]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.2->org.scala-lang#scala-library;2.10.3 [compile->compile]
@@ -925,32 +925,32 @@
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.2->org.scala-lang#scala-library;2.10.3 [compile->master]
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.2->org.scala-sbt#interface;0.13.2 [compile->default(compile)]
 [debug] resolving dependencies for configuration 'runtime-internal'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [runtime-internal]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [runtime]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [runtime-internal]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [runtime]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
 [debug] == resolving dependencies default#global-plugins;0.0->org.jetbrains#sbt-structure;2.4.0 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [optional]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [optional]
 [debug] resolving dependencies for configuration 'test-internal'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [test-internal]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [test]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [runtime]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [test-internal]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [test]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [runtime]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->default#global-plugins;0.0 [compile->default(compile)]
 [debug] == resolving dependencies default#global-plugins;0.0->org.jetbrains#sbt-structure;2.4.0 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [optional]
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [provided]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->default(compile)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->runtime]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->compile]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->master]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.2 [provided->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-assembly;0.11.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-buildinfo;0.3.2 [compile->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->com.eed3si9n#sbt-dirty-money;0.1.0 [compile->default(compile)]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [optional]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [provided]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->default(compile)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->runtime]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->compile]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [provided->master]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.2 [provided->default(compile)]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.2->org.scala-lang#scala-library;2.10.3 [compile->default(compile)]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.2->org.scala-lang#scala-library;2.10.3 [compile->runtime]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.2->org.scala-lang#scala-library;2.10.3 [compile->compile]
@@ -1264,18 +1264,18 @@
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.2->org.scala-lang#scala-library;2.10.3 [compile->master]
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.2->org.scala-sbt#interface;0.13.2 [compile->default(compile)]
 [debug] resolving dependencies for configuration 'plugin'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [plugin]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [plugin]
 [debug] resolving dependencies for configuration 'sources'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [sources]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [sources]
 [debug] resolving dependencies for configuration 'docs'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [docs]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [docs]
 [debug] resolving dependencies for configuration 'pom'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [pom]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [pom]
 [debug] resolving dependencies for configuration 'scala-tool'
-[debug] == resolving dependencies for default#sparqlclient-build;0.1-SNAPSHOT [scala-tool]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.3 [scala-tool->default]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.3 [scala-tool->runtime]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.3 [scala-tool->compile]
+[debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [scala-tool]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.3 [scala-tool->default]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.3 [scala-tool->runtime]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.3 [scala-tool->compile]
 [debug] == resolving dependencies org.scala-lang#scala-compiler;2.10.3->org.scala-lang#scala-library;2.10.3 [compile->master(*)]
 [debug] == resolving dependencies org.scala-lang#scala-compiler;2.10.3->org.scala-lang#scala-library;2.10.3 [compile->compile(*)]
 [debug] == resolving dependencies org.scala-lang#scala-compiler;2.10.3->org.scala-lang#scala-library;2.10.3 [compile->default]
@@ -1293,8 +1293,8 @@
 [debug] == resolving dependencies org.scala-lang#scala-compiler;2.10.3->org.scala-lang#scala-reflect;2.10.3 [runtime->compile]
 [debug] == resolving dependencies org.scala-lang#scala-reflect;2.10.3->org.scala-lang#scala-library;2.10.3 [runtime->runtime(*)]
 [debug] == resolving dependencies org.scala-lang#scala-reflect;2.10.3->org.scala-lang#scala-library;2.10.3 [runtime->compile]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.3 [scala-tool->master]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.3 [scala-tool->optional(default)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.3 [scala-tool->master]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.3 [scala-tool->optional(default)]
 [debug] == resolving dependencies org.scala-lang#scala-compiler;2.10.3->org.scala-lang#jline;2.10.3 [optional->master(*)]
 [info] Resolving org.scala-lang#jline;2.10.3 ...
 [debug] sbt-chain: Checking cache for: dependency: org.scala-lang#jline;2.10.3 {optional=[compile(*), master(*)]}
@@ -1309,11 +1309,11 @@
 [debug] 	typesafe-ivy-releases: revision in cache: org.fusesource.jansi#jansi;1.4
 [debug] 	found org.fusesource.jansi#jansi;1.4 in sbt-chain
 [debug] == resolving dependencies org.scala-lang#jline;2.10.3->org.fusesource.jansi#jansi;1.4 [compile->compile(*)]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [scala-tool->default]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [scala-tool->runtime]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [scala-tool->compile]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [scala-tool->master]
-[debug] == resolving dependencies default#sparqlclient-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [scala-tool->optional(default)]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [scala-tool->default]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [scala-tool->runtime]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [scala-tool->compile]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [scala-tool->master]
+[debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.3 [scala-tool->optional(default)]
 [debug] 	resolved ivy file produced in cache
 [debug] :: downloading artifacts ::
 [debug] 	[NOT REQUIRED] com.eed3si9n#sbt-assembly;0.11.2!sbt-assembly.jar
@@ -1367,19 +1367,19 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#apply-macro;0.13.2!apply-macro.jar
 [debug] 	[NOT REQUIRED] org.scala-lang#jline;2.10.3!jline.jar
 [debug] 	[NOT REQUIRED] org.fusesource.jansi#jansi;1.4!jansi.jar
-[debug] :: resolution report :: resolve 2349ms :: artifacts dl 51ms
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT compile produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-compile.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT runtime produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-runtime.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT test produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-test.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT provided produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-provided.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT optional produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-optional.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT compile-internal produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-compile-internal.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT runtime-internal produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-runtime-internal.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT test-internal produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-test-internal.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT plugin produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-plugin.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT sources produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-sources.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT docs produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-docs.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT pom produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-pom.xml
-[debug] 	report for default#sparqlclient-build;0.1-SNAPSHOT scala-tool produced in /Users/basca/Workspace/sw/sparqlclient/project/target/resolution-cache/reports/default-sparqlclient-build-scala-tool.xml
-[debug] 	resolve done (2349ms resolve - 51ms download)
+[debug] :: resolution report :: resolve 2174ms :: artifacts dl 44ms
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT compile produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-compile.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT runtime produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-runtime.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT test produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-test.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT provided produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-provided.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT optional produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-optional.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT compile-internal produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-compile-internal.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT runtime-internal produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-runtime-internal.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT test-internal produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-test-internal.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT plugin produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-plugin.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT sources produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-sources.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT docs produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-docs.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT pom produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-pom.xml
+[debug] 	report for default#trunk-build;0.1-SNAPSHOT scala-tool produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-scala-tool.xml
+[debug] 	resolve done (2174ms resolve - 44ms download)
 [info] Done updating.

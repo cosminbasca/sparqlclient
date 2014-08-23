@@ -351,8 +351,7 @@ class SparqlClient(val endpointLocation: URL, val updateEndpointLocation: Option
       case Success(response: Response) =>
         val resultsIterator:Either[HttpException, (Seq[String], Iterator[Seq[RdfTerm]])] = if (response.getStatusCode / 100 == 2) {
           val results = detectDataFormat(response.getHeaders("Content-type")) match {
-//            case DataFormat.Json => convert.fromJson(response.getResponseBody)
-            case DataFormat.Json => throw new UnsupportedOperationException("TODO FIX JSON PARSING HERE !!!")
+            case DataFormat.Json => convert.fromJson(response.getResponseBody)
             case DataFormat.Xml => convert.fromXML(response.getResponseBody)
             case DataFormat.Rdf => convert.fromRDF(response.getResponseBody)
             case DataFormat.Csv => convert.fromCSV(response.getResponseBody)

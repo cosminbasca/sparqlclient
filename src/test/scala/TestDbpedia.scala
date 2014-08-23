@@ -1,4 +1,4 @@
-import com.sparqlclient.SparqlClient
+import com.sparqlclient.{DataFormat, SparqlClient}
 import com.sparqlclient.rdf.RdfTerm
 
 import collection.mutable.Stack
@@ -9,10 +9,9 @@ import org.scalatest._
  */
 
 class TestDbpedia extends FlatSpec with BeforeAndAfter {
-  "SparqlClient" should "be able to retrieve results from DBPEDIA if endpoint is up!" in {
-    val dbpedia = SparqlClient("http://dbpedia.org/sparql")
+  def getDBpediaResults(maxResults: Int=10, format: DataFormat.Value=DataFormat.Xml): Seq[Seq[RdfTerm]] = {
+    val dbpedia = SparqlClient("http://dbpedia.org/sparql", format=format)
 
-    val maxResults = 10
     val query = s"""
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT ?p ?label
@@ -20,8 +19,19 @@ class TestDbpedia extends FlatSpec with BeforeAndAfter {
     LIMIT $maxResults
                 """
     val results:Seq[Seq[RdfTerm]] = dbpedia(query, 10)._2.toSeq
-    assert(results.length == maxResults, "the number of results differs")
-
     dbpedia.shutdown()
+    results
+  }
+
+  "SparqlClient" should "be able to retrieve XML results from DBPEDIA if endpoint is up!" in {
+    val maxResults: Int = 10
+    val results:Seq[Seq[RdfTerm]] = getDBpediaResults(maxResults = maxResults, format = DataFormat.Xml)
+    assert(results.length == maxResults, "the number of results differs")
+  }
+
+  "SparqlClient" should "be able to retrieve JSON results from DBPEDIA if endpoint is up!" in {
+    val maxResults: Int = 10
+    val results:Seq[Seq[RdfTerm]] = getDBpediaResults(maxResults = maxResults, format = DataFormat.Json)
+    assert(results.length == maxResults, "the number of results differs")
   }
 }
