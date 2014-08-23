@@ -40,7 +40,7 @@
 [debug] == resolving dependencies for default#trunk-build;0.1-SNAPSHOT [provided]
 [debug] == resolving dependencies default#trunk-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.2 [provided->default(compile)]
 [info] Resolving org.scala-lang#scala-library;2.10.2 ...
-[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@1b165b74
+[debug] sbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@4f4ef0ab
 [debug] sbt-chain: module revision found in cache: org.scala-lang#scala-library;2.10.2
 [debug] 	typesafe-ivy-releases: revision in cache: org.scala-lang#scala-library;2.10.2
 [debug] 	found org.scala-lang#scala-library;2.10.2 in sbt-chain
@@ -1382,7 +1382,7 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#apply-macro;0.13.0!apply-macro.jar
 [debug] 	[NOT REQUIRED] org.scala-lang#jline;2.10.2!jline.jar
 [debug] 	[NOT REQUIRED] org.fusesource.jansi#jansi;1.4!jansi.jar
-[debug] :: resolution report :: resolve 682ms :: artifacts dl 19ms
+[debug] :: resolution report :: resolve 1993ms :: artifacts dl 43ms
 [debug] 	report for default#trunk-build;0.1-SNAPSHOT compile produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-compile.xml
 [debug] 	report for default#trunk-build;0.1-SNAPSHOT runtime produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-runtime.xml
 [debug] 	report for default#trunk-build;0.1-SNAPSHOT test produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-test.xml
@@ -1396,5 +1396,5 @@
 [debug] 	report for default#trunk-build;0.1-SNAPSHOT docs produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-docs.xml
 [debug] 	report for default#trunk-build;0.1-SNAPSHOT pom produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-pom.xml
 [debug] 	report for default#trunk-build;0.1-SNAPSHOT scala-tool produced in /Users/cosmin/workspace/ddis/sw/sparqlclient/trunk/project/target/resolution-cache/reports/default-trunk-build-scala-tool.xml
-[debug] 	resolve done (682ms resolve - 19ms download)
+[debug] 	resolve done (1993ms resolve - 43ms download)
 [info] Done updating.

@@ -11,7 +11,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
     <output url="file://$MODULE_DIR$/../../target/scala-2.11/classes" />
     <output-test url="file://$MODULE_DIR$/../../target/scala-2.11/test-classes" />
     <exclude-output />
@@ -42,6 +42,7 @@
     <orderEntry type="library" name="SBT: org.scala-lang.modules:scala-xml_2.11:1.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="SBT: org.scalatest:scalatest_2.11:2.1.7" level="project" />
     <orderEntry type="library" name="SBT: org.slf4j:slf4j-api:1.7.5" level="project" />
+    <orderEntry type="library" name="SBT:: scala-compiler-bundle:2.11.2" level="project" />
   </component>
 </module>
 

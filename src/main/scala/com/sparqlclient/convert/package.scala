@@ -26,9 +26,9 @@ package object convert {
    *         is equal to the number of variables returned by the SPARQL SELECT query.
    */
   def fromJson(content: String): (Seq[String], Iterator[Seq[RdfTerm]]) = {
-    val json = parse(content)
     implicit val formats = DefaultFormats // Brings in default date formats etc.
     case class Binding(`type`: String, `value`: String, `xml:lang`: Option[String], `datatype`: Option[String])
+    case class Bindings(`bindings`: Map[String, Binding])
 
     def getNode(binding: Binding): RdfTerm = {
       binding.`type` match {
@@ -41,12 +41,13 @@ package object convert {
       }
     }
 
-    val header: List[String] = json \ "head" \ "vars" \\ classOf[JString]
-    val results: List[Map[String, Binding]] = (json \ "results" \ "bindings").extract
+    val json = parse(content)
+    val header: List[String] = (json \ "head" \ "vars").extract[List[String]]
+    val results: List[Bindings] = (json \ "results").extract[List[Bindings]]
 
-    val resultsIterator:Iterator[Seq[RdfTerm]] = for (binding: Map[String, Binding] <- results.iterator) yield
+    val resultsIterator:Iterator[Seq[RdfTerm]] = for (binding: Bindings <- results.iterator) yield
         for (column: String <- header) yield
-          getNode(binding(column))
+          getNode(binding.`bindings`(column))
 
     (header, resultsIterator)
   }
