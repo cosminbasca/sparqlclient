@@ -8,9 +8,19 @@ import org.scalatest._
  * Created by basca on 13/06/14.
  */
 
-class TestDbpedia extends FlatSpec with BeforeAndAfter {
+class TestDbpedia extends FlatSpec with BeforeAndAfterAll {
+  var dbpedia: SparqlClient = null
+
+  override def beforeAll(): Unit = {
+    dbpedia = SparqlClient("http://dbpedia.org/sparql")
+  }
+
+  override def afterAll(): Unit = {
+    dbpedia.shutdown()
+  }
+
   def getDBpediaResults(maxResults: Int=10, format: DataFormat.Value=DataFormat.Xml): Seq[Seq[RdfTerm]] = {
-    val dbpedia = SparqlClient("http://dbpedia.org/sparql", format=format)
+    dbpedia.setReturnFormat(format)
 
     val query = s"""
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -19,7 +29,6 @@ class TestDbpedia extends FlatSpec with BeforeAndAfter {
     LIMIT $maxResults
                 """
     val results:Seq[Seq[RdfTerm]] = dbpedia(query, 10)._2.toSeq
-    dbpedia.shutdown()
     results
   }
 
