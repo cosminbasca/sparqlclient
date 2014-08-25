@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sbt compile assembly publishLocal
+sbt +compile +assembly +publishLocal

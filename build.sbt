@@ -19,13 +19,6 @@ crossScalaVersions := Seq("2.10.4", "2.11.2")
 
 scalacOptions ++= Seq("-optimize", "-Yinline-warnings", "-feature", "-deprecation")
 
-
-excludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
-  cp filter {
-    _.data.getName == "minlog-1.2.jar"
-  }
-}
-
 // ---------------------------------------------------------------------------------------------------------------------
 //
 // build info setup
