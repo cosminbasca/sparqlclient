@@ -23,23 +23,20 @@ class TestDbpedia extends FlatSpec with BeforeAndAfterAll {
     dbpedia.setReturnFormat(format)
 
     val query = s"""
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT ?p ?label
-    WHERE { <http://dbpedia.org/resource/Asturias> ?p ?label }
-    LIMIT $maxResults
+    select distinct ?Concept where {[] a ?Concept} LIMIT $maxResults
                 """
     val results:Seq[Seq[RdfTerm]] = dbpedia(query, 10)._2.toSeq
     results
   }
 
   "SparqlClient" should "be able to retrieve XML results from DBPEDIA if endpoint is up!" in {
-    val maxResults: Int = 10
+    val maxResults: Int = 100
     val results:Seq[Seq[RdfTerm]] = getDBpediaResults(maxResults = maxResults, format = DataFormat.Xml)
     assert(results.length == maxResults, "the number of results differs")
   }
 
   "SparqlClient" should "be able to retrieve JSON results from DBPEDIA if endpoint is up!" in {
-    val maxResults: Int = 10
+    val maxResults: Int = 100
     val results:Seq[Seq[RdfTerm]] = getDBpediaResults(maxResults = maxResults, format = DataFormat.Json)
     assert(results.length == maxResults, "the number of results differs")
   }
